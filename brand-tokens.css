@@ -1,0 +1,43 @@
+/* 9CRABS — American Coastal Seafood (recommended) */
+:root {
+  --crab-red: #EC2201;
+  --deep-navy: #012850;
+  --ocean-blue: #025A9F;
+  --oyster-cream: #FFF4E6;
+  --corn-gold: #FFBD59;
+  --seafoam: #D4E8E5;
+  --body-ink: #21394B;
+  --white: #FFFFFF;
+
+  /* UI semantic tokens */
+  --brand-primary: var(--crab-red);
+  --brand-secondary: var(--deep-navy);
+  --page-background: var(--oyster-cream);
+  --surface: var(--white);
+  --text-primary: var(--deep-navy);
+  --text-inverse: var(--white);
+  --accent: var(--corn-gold);
+  --cta-background: var(--crab-red);
+  --cta-text: var(--white);
+}
+
+/* Usage suggestions: cream 45%, navy 25%, red 15%, blue 10%, gold 5% */
+/* Use seafoam as an optional secondary surface; it does not need a fixed share. */
+
+/* Optional theme — Louisiana Cajun */
+[data-theme="cajun"] {
+  --brand-primary: #CF3D26;
+  --brand-secondary: #172B39;
+  --page-background: #F7EBDD;
+  --text-primary: #172B39;
+  --accent: #E4A53E;
+}
+
+/* Optional theme — New England Coast */
+[data-theme="new-england"] {
+  --brand-primary: #D65337;
+  --brand-secondary: #193C4D;
+  --page-background: #F5F0E8;
+  --text-primary: #193C4D;
+  --accent: #D8B98D;
+}

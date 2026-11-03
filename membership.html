@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi" data-static>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="title.member">Thẻ thành viên 9Crabs – Tích điểm, lên hạng, tặng cua</title>
+<link rel="icon" type="image/png" href="img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="thanh-tren"><div class="khung">
+  <span data-i18n="thanh.mien-phi">🦀 Miễn phí giao hàng cho đơn từ 1.500.000đ</span>
+  <div class="phai"><a href="menu.html" data-i18n="thanh.dat-mon">Đặt món online</a><a href="contact.html" data-i18n="thanh.dat-ban">Đặt bàn</a><a href="https://zalo.me/0909999999" data-i18n="thanh.zalo">Zalo 24/7</a></div>
+</div></div>
+<header class="dau-trang" data-trang="member"></header>
+
+<main>
+<!-- Hero thẻ -->
+<section class="hero" style="padding-top:1.4rem">
+  <div class="khung">
+    <div class="hero-chinh" style="min-height:420px;grid-template-columns:1.1fr .9fr">
+      <div class="noi-dung">
+        <div class="nho" data-i18n="tv.nho">Chương trình thẻ thành viên</div>
+        <h1 data-i18n-html="tv.h1">Ăn cua càng nhiều,<br>ưu đãi <em>càng lớn</em></h1>
+        <p data-i18n="tv.p">Đăng ký miễn phí bằng số điện thoại. Tích điểm mọi đơn, tự động lên hạng, giảm giá trực tiếp khi thanh toán và nhận cua tặng dịp sinh nhật.</p>
+        <div class="hang-nut"><a href="#dang-ky" class="nut sang" data-i18n="tv.dang-ky-ngay">Đăng ký ngay</a><a href="#tra-cuu" class="nut vien" data-i18n="tv.tra-cuu">Tra cứu điểm</a></div>
+      </div>
+      <div class="the-khung">
+        <div class="the-thanh-vien vang">
+          <div class="the-dau"><img src="img/logo.png" alt="9Crabs"><span data-i18n="tv.hang-vang">Hạng Vàng</span></div>
+          <div class="the-so">9CM-100 001</div>
+          <div class="the-chan"><span data-i18n="tv.the-ten">NGUYỄN VĂN A</span><span>09•• ••• 567</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Hạng -->
+<section>
+  <div class="khung">
+    <div class="ornament"><span data-i18n="tv.hang-orn">3 hạng thành viên</span></div>
+    <h2 data-i18n="tv.hang-h2">Quyền lợi theo hạng</h2>
+    <p class="mo-ta" data-i18n="tv.hang-p">Hạng được tính theo tổng chi tiêu các đơn hoàn tất, tự động nâng khi đạt mốc. Mức giảm áp dụng ngay khi bạn nhập số điện thoại ở bước thanh toán.</p>
+    <div class="luoi-hang" id="luoi-hang"></div>
+  </div>
+</section>
+
+<!-- Cách tích điểm -->
+<section class="nen-kem gioi-thieu">
+  <div class="khung">
+    <div class="ornament"><span data-i18n="tv.diem-orn">Tích điểm</span></div>
+    <h2 data-i18n="tv.diem-h2">Đơn giản như đếm càng cua</h2>
+    <div class="cot-3">
+      <div><div class="bieu-tuong">🧾</div><h3 data-i18n="tv.d1h">Mua – tích điểm</h3><p data-i18n="tv.d1p">Mỗi 100.000đ trên đơn hoàn tất được 1 điểm, cộng tự động vào tài khoản theo số điện thoại.</p></div>
+      <div><div class="bieu-tuong">🎁</div><h3 data-i18n="tv.d2h">Đổi quà</h3><p data-i18n="tv.d2p">20 điểm đổi 1 set bánh bao chiên, 60 điểm đổi 1 phần gà chiên mắm, 150 điểm đổi 1 cua lớn.</p></div>
+      <div><div class="bieu-tuong">🎂</div><h3 data-i18n="tv.d3h">Quà sinh nhật</h3><p id="uu-dai-sinh-nhat" data-i18n="tv.d3p">Tặng 1 cua lớn trong tháng sinh nhật cho hạng Vàng; hạng Bạc nhận voucher 100.000đ.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Đăng ký + tra cứu -->
+<section id="dang-ky">
+  <div class="khung lien-he-luoi">
+    <form class="form" id="form-dang-ky" data-thanh-vien>
+      <div class="ornament" style="justify-content:flex-start"><span data-i18n="tv.mien-phi">Miễn phí</span></div>
+      <h2 style="text-align:left;font-size:1.6rem" data-i18n="tv.form-h2">Đăng ký thẻ thành viên</h2>
+      <label data-i18n="tv.ho-ten">Họ và tên *</label><input name="ho_ten" required placeholder="Nguyễn Văn A">
+      <label data-i18n="tv.sdt">Số điện thoại *</label><input name="sdt" required placeholder="09xx xxx xxx" inputmode="tel">
+      <label data-i18n="tv.email">Email</label><input name="email" type="email" placeholder="ban@email.com">
+      <label data-i18n="tv.ngay-sinh">Ngày sinh (nhận quà sinh nhật)</label><input name="ngay_sinh" type="date">
+      <label data-i18n="tv.dia-chi">Địa chỉ giao hàng thường dùng</label><input name="dia_chi" placeholder="Số nhà, đường, phường, quận">
+      <div class="thong-bao" id="kq-dang-ky"></div>
+      <p style="margin-top:1.2rem"><button class="nut do" type="submit" data-i18n="tv.gui">Tạo thẻ thành viên</button></p>
+      <p style="font-size:.78rem;color:var(--xam)" data-i18n="tv.dieu-khoan">Thẻ được gắn với số điện thoại. 9Crabs chỉ dùng thông tin để tích điểm và gửi ưu đãi, không chia sẻ cho bên thứ ba.</p>
+    </form>
+
+    <div>
+      <form class="form" id="form-tra-cuu" data-thanh-vien>
+        <h2 style="text-align:left;font-size:1.6rem" id="tra-cuu" data-i18n="tv.tra-cuu-h2">Tra cứu điểm & hạng</h2>
+        <label data-i18n="tv.sdt">Số điện thoại *</label><input name="sdt" required placeholder="09xx xxx xxx" inputmode="tel">
+        <p style="margin-top:1.2rem"><button class="nut" type="submit" data-i18n="tv.xem">Xem thông tin</button></p>
+        <div id="kq-tra-cuu"></div>
+      </form>
+      <div class="hoi-dap" style="margin-top:2rem">
+        <details open><summary data-i18n="tv.q1">Thẻ có mất phí không?</summary><p data-i18n="tv.a1">Hoàn toàn miễn phí, không cần thẻ vật lý. Chỉ cần đọc số điện thoại khi đặt hàng hoặc thanh toán tại quán.</p></details>
+        <details><summary data-i18n="tv.q2">Điểm có hết hạn không?</summary><p data-i18n="tv.a2">Điểm có hiệu lực 12 tháng kể từ lần mua gần nhất. Hạng được giữ trong 12 tháng kể từ khi đạt.</p></details>
+        <details><summary data-i18n="tv.q3">Tôi đã từng đặt hàng, có được tính không?</summary><p data-i18n="tv.a3">Có. Khi đăng ký bằng đúng số điện thoại đã đặt, lịch sử chi tiêu được giữ nguyên để xét hạng.</p></details>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="chan-trang" data-tu-dong></footer>
+<a class="zalo-noi" href="https://zalo.me/0909999999" data-i18n="zalo.chat">💬 Chat Zalo</a>
+<script src="static-api.js"></script>
+<script src="i18n.js"></script>
+<script src="app.js"></script>
+<script>
+(() => {
+  const C9 = window.NineCrabs; const { t, vnd, thoat } = C9;
+  const TEN_HANG = { thuong: ['Thường', 'Standard', '일반'], bac: ['Bạc', 'Silver', '실버'], vang: ['Vàng', 'Gold', '골드'] };
+  const hang = (k) => (TEN_HANG[k] || [k, k, k])[{ vi: 0, en: 1, ko: 2 }[C9.lang()] || 0];
+
+  function veHang() {
+    const ch = C9.cauHinh; const so = (k, d) => Number(ch[k]) || d;
+    const DS = [
+      { k: 'thuong', moc: t('tv.moc-thuong', 'Đăng ký là có'), giam: '0%', ql: [t('tv.ql-diem', 'Tích {d} điểm / 100.000đ', { d: so('diem_moi_100k', 1) }), t('tv.ql-tang', 'Tặng {d} điểm chào mừng', { d: so('diem_tang_dang_ky', 5) }), t('tv.ql-tin', 'Nhận tin ưu đãi sớm 24 giờ')] },
+      { k: 'bac', moc: t('tv.moc', 'Chi tiêu từ {s}', { s: vnd(so('nguong_hang_bac', 3000000)) }), giam: `${so('giam_hang_bac', 3)}%`, ql: [t('tv.ql-giam', 'Giảm {g}% mọi đơn', { g: so('giam_hang_bac', 3) }), t('tv.ql-voucher', 'Voucher 100.000đ tháng sinh nhật'), t('tv.ql-freeship', 'Miễn phí giao từ 1.000.000đ')] },
+      { k: 'vang', moc: t('tv.moc', 'Chi tiêu từ {s}', { s: vnd(so('nguong_hang_vang', 10000000)) }), giam: `${so('giam_hang_vang', 5)}%`, ql: [t('tv.ql-giam', 'Giảm {g}% mọi đơn', { g: so('giam_hang_vang', 5) }), t('tv.ql-cua', 'Tặng 1 cua lớn tháng sinh nhật'), t('tv.ql-uu-tien', 'Ưu tiên đặt bàn cuối tuần & phòng riêng')] },
+    ];
+    document.getElementById('luoi-hang').innerHTML = DS.map((h) => `<div class="the-hang ${h.k}"><div class="nho">${h.moc}</div><h3>${hang(h.k)}</h3><div class="giam">${h.giam}<small>${t('tv.giam-moi-don', 'giảm mỗi đơn')}</small></div><ul>${h.ql.map((q) => `<li>✓ ${q}</li>`).join('')}</ul></div>`).join('');
+    if (ch.uu_dai_sinh_nhat && C9.lang() === 'vi') document.getElementById('uu-dai-sinh-nhat').textContent = ch.uu_dai_sinh_nhat;
+  }
+  C9.san.then(veHang); document.addEventListener('9crabs:lang', veHang);
+
+  document.getElementById('form-dang-ky').addEventListener('submit', async (e) => {
+    e.preventDefault(); const kq = document.getElementById('kq-dang-ky'); kq.style.display = 'block'; kq.style.background = ''; kq.style.color = '';
+    const b = Object.fromEntries(new FormData(e.target));
+    const r = await fetch('/api/membership/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) }); const d = await r.json();
+    if (!r.ok) { kq.style.background = '#ffebee'; kq.style.color = '#c62828'; kq.textContent = d.loi; return; }
+    kq.innerHTML = d.moi ? `🎉 ${t('tv.ok-moi', 'Chào mừng {ten}! Mã thẻ của bạn:', { ten: thoat(d.ho_ten) })} <b>${d.ma_the}</b> · ${t('tv.ok-diem', '{d} điểm chào mừng đã vào tài khoản.', { d: d.diem })}`
+      : `✅ ${t('tv.ok-cu', 'Số điện thoại này đã là thành viên. Mã thẻ:')} <b>${d.ma_the}</b> · ${hang(d.hang)} · ${d.diem} ${t('tv.diem', 'điểm')}`;
+    if (d.moi) e.target.reset();
+  });
+  document.getElementById('form-tra-cuu').addEventListener('submit', async (e) => {
+    e.preventDefault(); const kq = document.getElementById('kq-tra-cuu');
+    const r = await fetch('/api/membership/lookup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.fromEntries(new FormData(e.target))) }); const d = await r.json();
+    if (!r.ok) { kq.innerHTML = `<div class="thong-bao" style="display:block;background:#ffebee;color:#c62828">${thoat(d.loi)} – <a href="#dang-ky" style="text-decoration:underline">${t('tv.dang-ky-ngay', 'Đăng ký ngay')}</a></div>`; return; }
+    const tiep = d.hang === 'vang' ? null : d.hang === 'bac' ? d.nguong_vang : d.nguong_bac; const conThieu = tiep ? Math.max(0, tiep - d.tong_chi) : 0;
+    kq.innerHTML = `<div class="the-thanh-vien ${d.hang}" style="margin-top:1.2rem"><div class="the-dau"><img src="img/logo.png" alt="9Crabs"><span>${hang(d.hang)}</span></div><div class="the-so">${d.ma_the}</div><div class="the-chan"><span>${thoat(d.ho_ten).toUpperCase()}</span><span>${d.diem} ${t('tv.diem', 'điểm')}</span></div></div>
+      <ul class="tv-thong-ke"><li>${t('tv.so-don', 'Đơn hoàn tất')}: <b>${d.so_don}</b></li><li>${t('tv.tong-chi', 'Tổng chi tiêu')}: <b>${vnd(d.tong_chi)}</b></li>${tiep ? `<li>${t('tv.con-thieu', 'Còn {s} để lên hạng {h}', { s: vnd(conThieu), h: hang(d.hang === 'bac' ? 'vang' : 'bac') })}</li>` : `<li>🏆 ${t('tv.cao-nhat', 'Bạn đang ở hạng cao nhất!')}</li>`}</ul>`;
+  });
+})();
+</script>
+</body>
+</html>

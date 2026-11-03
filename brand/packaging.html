@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Bộ bao bì 9Crabs: mô hình 3D đúng tỷ lệ, bảng quy cách đặt hàng theo size thị trường và dự tính số lượng.">
+<meta property="og:title" content="9Crabs Packaging Kit">
+<meta property="og:description" content="Bộ bao bì 9Crabs: mô hình 3D đúng tỷ lệ, bảng quy cách đặt hàng theo size thị trường và dự tính số lượng.">
+<meta property="og:image" content="logo-9crabs.png">
+<meta name="theme-color" content="#012850">
+<link rel="icon" type="image/png" href="logo-9crabs.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>9Crabs Packaging Kit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..900&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a supplier-facing packaging sheet. A true-scale 3D studio first, then the order table, references and print checks. */
+:root{
+  --red:#EC2201; --navy:#012850; --blue:#025A9F; --cream:#FFF4E6; --gold:#FFBD59; --foam:#D4E8E5;
+  --bg:#FFF4E6; --surface:#FFFFFF; --surface-2:#F6E8D6; --fg:#012850; --muted:#536878; --line:rgba(1,40,80,.14);
+  --accent-text:#CF1E00; --ok:#1C7C54; --warn:#B25E00;
+  --display:"Archivo","Arial Black","Helvetica Neue",Arial,sans-serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#021A33;--surface:#06284D;--surface-2:#0A355F;--fg:#FFF4E6;--muted:#A9CBDC;--line:rgba(255,244,230,.16);--accent-text:#FF7A5E;--ok:#5CCB98;--warn:#FFBD59;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#021A33;--surface:#06284D;--surface-2:#0A355F;--fg:#FFF4E6;--muted:#A9CBDC;--line:rgba(255,244,230,.16);--accent-text:#FF7A5E;--ok:#5CCB98;--warn:#FFBD59;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--navy)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+h1,h2,h3{font-family:var(--display);font-variation-settings:"wdth" 118;font-weight:900;text-transform:uppercase;letter-spacing:-.02em;line-height:1;margin:0;text-wrap:balance}
+h2{font-size:clamp(1.7rem,4vw,2.8rem)}
+h3{font-size:1.1rem;font-variation-settings:"wdth" 110}
+p{margin:0}
+a{color:inherit}
+.wrap{max-width:1240px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+.mono{font-family:var(--mono)}
+.num{font-variant-numeric:tabular-nums}
+.sec{padding-block:clamp(44px,6vw,80px)}
+.sec-head{display:grid;gap:10px;margin-bottom:26px;max-width:72ch}
+header.top{background:var(--navy);color:var(--cream)}
+header.top .wrap{padding-block:clamp(36px,6vw,64px);display:grid;gap:14px}
+header.top .eyebrow{color:#A9CBDC}
+header.top h1{font-size:clamp(2.6rem,8vw,5.6rem);font-variation-settings:"wdth" 125;letter-spacing:-.04em}
+header.top h1 b{color:#FF6340;font-weight:900}
+header.top p{max-width:66ch;color:#D7E4EE;font-size:1.08rem}
+header.top .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;font-weight:600;font-size:.9rem;text-decoration:none;border:1px solid rgba(255,244,230,.3);color:var(--cream)}
+.btn.solid{background:var(--red);border-color:var(--red)}
+.btn:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* Studio */
+.studio{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:stretch}
+@media (max-width:900px){.studio{grid-template-columns:1fr}}
+.stage{position:relative;border-radius:16px;overflow:hidden;background:#F3E6D3;border:1px solid var(--line);min-height:420px;height:min(68vh,620px);min-width:0}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.stage canvas:active{cursor:grabbing}
+.stage .hint{position:absolute;right:12px;top:12px;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;background:rgba(1,40,80,.82);color:#FFF4E6;padding:6px 10px;border-radius:8px;pointer-events:none}
+.stage .card{position:absolute;left:12px;bottom:12px;right:12px;max-width:440px;background:rgba(255,250,243,.96);color:#012850;border-radius:12px;padding:14px 16px;box-shadow:0 10px 30px rgba(1,40,80,.18);border:1px solid rgba(1,40,80,.1)}
+.stage .card .code{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;color:#CF1E00}
+.stage .card b{display:block;font-size:1.05rem;margin:2px 0 6px}
+.stage .card dl{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;margin:0;font-size:.86rem}
+.stage .card dt{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:#536878;padding-top:2px}
+.stage .card dd{margin:0}
+.stage .fallback{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:#012850}
+.picker{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;gap:6px;align-content:start;min-width:0}
+.picker button{all:unset;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:9px 10px;border-radius:10px;cursor:pointer;font-size:.92rem}
+.picker button:hover{background:var(--surface-2)}
+.picker button[aria-pressed="true"]{background:var(--navy);color:var(--cream)}
+.picker button[aria-pressed="true"] .dim{color:#A9CBDC}
+.picker .sw{width:14px;height:14px;border-radius:4px;border:1px solid rgba(1,40,80,.2)}
+.picker .dim{font-family:var(--mono);font-size:.72rem;color:var(--muted);white-space:nowrap}
+.picker .reset{justify-self:start;margin-top:6px;font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;color:var(--accent-text);text-decoration:underline;grid-template-columns:1fr}
+@media (max-width:900px){.picker{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}}
+
+/* Table */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:1080px;font-size:.88rem}
+th,td{text-align:left;vertical-align:top;padding:11px 12px;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--surface-2);position:sticky;top:0}
+td.code{font-family:var(--mono);color:var(--accent-text);white-space:nowrap}
+td .n{font-weight:700;display:block}
+td .s{color:var(--muted);font-size:.82rem}
+td.size{font-family:var(--mono);white-space:nowrap}
+tbody tr:hover{background:var(--surface-2)}
+tr.group td{background:transparent;font-family:var(--display);font-variation-settings:"wdth" 112;font-weight:800;text-transform:uppercase;font-size:.82rem;letter-spacing:.02em;padding-top:18px;color:var(--fg)}
+
+/* Calculator */
+.calc{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:860px){.calc{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:14px;min-width:0}
+.panel label{display:grid;gap:6px;font-weight:600;font-size:.92rem}
+.panel input[type=range]{width:100%;accent-color:#EC2201}
+.panel .val{font-family:var(--mono);font-size:1.4rem;font-weight:500}
+.calc table{min-width:620px}
+.pill{display:inline-block;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.pill.ok{color:var(--ok);border:1px solid currentColor}
+.pill.warn{color:var(--warn);border:1px solid currentColor}
+
+/* Cards */
+.grid{display:grid;gap:16px}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:980px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.g4,.g2{grid-template-columns:1fr}}
+.card2{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
+.card2 .eyebrow{margin-bottom:8px}
+.card2 h3{margin-bottom:8px}
+.card2 p,.card2 li{font-size:.93rem}
+.card2 ul{margin:8px 0 0;padding-left:18px}
+.card2 li{margin:4px 0}
+.card2 .apply{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:.88rem}
+.card2 .apply b{color:var(--accent-text)}
+.note{font-size:.86rem;color:var(--muted);margin-top:12px;max-width:80ch}
+footer{background:var(--navy);color:#A9CBDC;padding-block:28px;font-size:.86rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+footer b{font-family:var(--display);color:#FFF4E6;font-weight:900}
+footer b span{color:#FF6340}
+
+.stage img.shot{display:none;width:100%;height:100%;object-fit:cover}
+/* PRINT: A4 ratio at desktop width so the PDF keeps the desktop layout */
+@page{size:1200px 1697px;margin:0}
+@media print{
+  html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  html{scroll-behavior:auto}
+  body::before,.no-print{display:none!important}
+  *{animation:none!important;transition:none!important}
+  .stage .hint,.picker .reset{display:none!important}
+  .stage canvas{display:none!important}
+  .stage img.shot{display:block!important}
+  .sec{break-before:page;padding-block:40px}
+  #studio{break-before:auto}
+  .stage{height:620px}
+  tr,.card2,.panel{break-inside:avoid}
+  h2,.sec-head{break-after:avoid}
+  /* desktop grid in print */
+  .studio{grid-template-columns:minmax(0,1fr) 320px}
+  .picker{grid-template-columns:1fr}
+  .calc{grid-template-columns:300px minmax(0,1fr)}
+  .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">9Crabs · Packaging Kit 2026 · Tài liệu gửi nhà cung cấp</p>
+    <h1 style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px"><img data-logo="reverse" src="logo-9crabs.png" alt="9Crabs" style="height:clamp(72px,11vw,124px);width:auto;aspect-ratio:1175/575;object-fit:contain">bao bì</h1>
+    <p>Hai mươi hai hạng mục bao bì và đồ nghề ăn tại bàn theo kích cỡ phổ thông trên thị trường Việt Nam, dựng 3D đúng tỷ lệ thật để duyệt mẫu. Bảng quy cách bên dưới gửi thẳng cho nhà in để báo giá.</p>
+    <div class="links">
+      <a class="btn solid" href="#dat-hang">Xem bảng đặt hàng</a>
+      <a class="btn" href="index.html">← Brand book 9Crabs</a>
+      <a class="btn no-print" href="pdf/9Crabs-Packaging-Kit.pdf" download>Tải PDF bảng đặt hàng</a>
+    </div>
+  </div>
+</header>
+
+<section class="sec" id="studio">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">01 · Studio 3D</p>
+      <h2>Toàn bộ đơn hàng, đúng kích thước</h2>
+      <p class="muted">Mọi hộp, túi, ly được dựng theo quy cách milimet trong bảng đặt hàng. Thước 30 cm đặt phía trước để so sánh. Kéo để xoay, cuộn hoặc chụm hai ngón để phóng to, bấm vào một món để xem quy cách.</p>
+    </div>
+    <div class="studio">
+      <div class="stage" id="stage">
+        <span class="hint">KÉO ĐỂ XOAY · TỶ LỆ 1:1</span>
+        <div class="card" id="infoCard" aria-live="polite"></div>
+      </div>
+      <div class="picker" id="picker" role="group" aria-label="Chọn bao bì"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="dat-hang" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">02 · Bảng quy cách đặt hàng</p>
+      <h2>Gửi bảng này cho nhà in</h2>
+      <p class="muted">Kích thước là size thông dụng có sẵn khuôn bế tại các xưởng bao bì giấy ở TP.HCM và Hà Nội, nên không mất phí làm khuôn mới. MOQ là mức tối thiểu thường gặp khi in riêng logo; con số thật phụ thuộc từng xưởng.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Mã</th><th>Hạng mục</th><th>Quy cách (mm)</th><th>Chất liệu</th><th>In ấn</th><th>Chứa / dùng cho</th><th>MOQ tham khảo</th><th>Ghi chú khi đặt</th></tr></thead>
+        <tbody id="specBody"></tbody>
+      </table>
+    </div>
+    <p class="note">Quy ước kích thước: túi ghi Rộng × Sâu (hông) × Cao; hộp ghi Dài × Rộng × Cao; ly, tô ghi Ø miệng × Ø đáy × Cao. Đề nghị xưởng gửi mẫu trắng (chưa in) để thử khít trước khi chốt in số lượng lớn.</p>
+  </div>
+</section>
+
+<section class="sec" id="du-tinh" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">03 · Dự tính số lượng</p>
+      <h2>Đặt bao nhiêu cho tháng đầu</h2>
+      <p class="muted">Kéo thanh trượt theo số đơn dự kiến. Hệ số “dùng / đơn” lấy từ cơ cấu menu: phần lớn đơn có một Boil Bag, khoảng một phần ba có roll hoặc đồ chiên. Đây là giả định, hãy chỉnh lại sau hai tuần bán thật.</p>
+    </div>
+    <div class="calc">
+      <div class="panel">
+        <label for="orders">Số đơn mỗi ngày (một store)<span class="val num" id="ordersVal">120</span><input id="orders" type="range" min="30" max="400" step="10" value="120"></label>
+        <label for="stores">Số store<span class="val num" id="storesVal">1</span><input id="stores" type="range" min="1" max="6" step="1" value="1"></label>
+        <label for="days">Số ngày tồn kho<span class="val num" id="daysVal">30</span><input id="days" type="range" min="14" max="90" step="1" value="30"></label>
+        <p class="muted" style="font-size:.84rem">Đã cộng 8% hao hụt cho hộp in hỏng, đổ vỡ và hàng mẫu.</p>
+      </div>
+      <div class="tablewrap" style="min-width:0">
+        <table>
+          <thead><tr><th>Mã</th><th>Hạng mục</th><th>Dùng / đơn</th><th>Cần đặt</th><th>So với MOQ</th></tr></thead>
+          <tbody id="calcBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="tham-khao" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">04 · Tham khảo chuẩn quốc tế</p>
+      <h2>Học từ các chuỗi đã làm tốt</h2>
+      <p class="muted">Không sao chép thiết kế của ai. 9Crabs lấy nguyên tắc vận hành đã được chứng minh ở các chuỗi quốc tế rồi áp vào bao bì của mình.</p>
+    </div>
+    <div class="grid g4">
+      <div class="card2"><p class="eyebrow">Shake Shack · Luke's Lobster</p><h3>Kraft + ít màu</h3><p>Hai chuỗi này dùng giấy kraft nâu và một đến hai màu in. Bao bì trông “thật”, rẻ hơn khi in, và màu thương hiệu nổi bật hơn trên nền giấy mộc.</p><p class="apply"><b>9Crabs:</b> mọi hộp kraft chỉ in navy + đỏ. Riêng Basket Box in đỏ toàn khối để phân biệt món chiên.</p></div>
+      <div class="card2"><p class="eyebrow">Seafood boil Mỹ · Five Guys</p><h3>Túi là món ăn</h3><p>Các quán crab boil ở Mỹ phục vụ hải sản ngay trong túi nhựa chịu nhiệt; Five Guys để khoai tràn trong túi giấy. Khoảnh khắc mở túi là trải nghiệm chính.</p><p class="apply"><b>9Crabs:</b> túi PA/PE hàn nhiệt bên trong, túi kraft có cửa sổ bên ngoài, khách đổ thẳng ra giấy lót.</p></div>
+      <div class="card2"><p class="eyebrow">Chuẩn giao hàng Anh, Úc, Mỹ</p><h3>Niêm phong chống mở</h3><p>Các nền tảng giao đồ ăn lớn khuyến nghị nhà hàng dán tem niêm phong miệng túi. Khách thấy tem nguyên là tin món chưa bị đụng tới.</p><p class="apply"><b>9Crabs:</b> tem tròn Ø50 mm loại decal vỡ, dán ngang miệng túi, in chữ “Chín tới”.</p></div>
+      <div class="card2"><p class="eyebrow">Sweetgreen · chuỗi fast-casual</p><h3>Giảm nhựa thấy được</h3><p>Chuỗi trẻ ở Mỹ chuyển sang tô giấy, nắp giấy và ghi rõ vật liệu trên bao bì. Ở Việt Nam, Nghị định 08/2022/NĐ-CP đặt lộ trình hạn chế túi nilon khó phân hủy từ 2026.</p><p class="apply"><b>9Crabs:</b> nhựa chỉ còn ở túi trong, hũ sốt và ly nước. Không xốp, không túi nilon quai xách.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="in-an" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">05 · Trước khi chốt in</p>
+      <h2>File in và thử nghiệm</h2>
+    </div>
+    <div class="grid g2">
+      <div class="card2">
+        <h3>Yêu cầu file gửi xưởng</h3>
+        <ul>
+          <li>File AI hoặc PDF/X-4, chữ đã convert outline, chừa lề bế 3 mm.</li>
+          <li>Màu khai báo bằng mã HEX của brand; yêu cầu xưởng chọn Pantone Solid Coated gần nhất và gửi bản proof trên đúng loại giấy.</li>
+          <li>In trên kraft nâu: lót một lớp trắng dưới Crab Red và chữ kem, nếu không đỏ sẽ ngả nâu.</li>
+          <li>Logo nhỏ nhất 24 mm chiều ngang; icon Claw Ring nhỏ nhất 8 mm.</li>
+          <li>Mặt đáy hộp in mã bao bì (PK-xx), ký hiệu vật liệu và “Food grade”.</li>
+        </ul>
+      </div>
+      <div class="card2">
+        <h3>Thử nghiệm với mẫu trắng</h3>
+        <ul>
+          <li><b>Giữ nhiệt:</b> Boil Bag đóng gói lúc 90°C, sau 45 phút trong Tote phải còn trên 60°C.</li>
+          <li><b>Chống dầu:</b> Basket Box đựng đồ chiên 30 phút, không thấm loang ra mặt ngoài.</li>
+          <li><b>Khít đơn:</b> Tote L chứa đủ 3 Boil Bag + 2 hộp đứng thẳng, không nghiêng khi xách.</li>
+          <li><b>Chịu nhiệt túi trong:</b> túi PA/PE không bong mối hàn khi đổ sốt 95°C.</li>
+          <li><b>Rò rỉ:</b> hũ sốt úp ngược 10 phút không chảy; ly nước nghiêng 45° không tràn qua lỗ ống hút.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><img data-logo="reverse" src="logo-9crabs.png" alt="9Crabs" style="height:40px;width:auto;aspect-ratio:1175/575;object-fit:contain"><span class="mono">PACKAGING KIT · v1 · 02.11.2026</span></div></footer>
+
+<script src="logo-kit.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const ITEMS=[
+ {id:'tote',grp:'Túi xách giao hàng',code:'PK-01',name:'Delivery Tote L',sub:'Túi giấy quai xoắn đáy rộng',size:'320 × 220 × 250',mat:'Kraft nâu 120 gsm, quai giấy xoắn Ø5',print:'Flexo 2 màu: nền navy phủ kín + chữ kem',holds:'3 Boil Bag + 2 hộp',moq:3000,use:0.3,note:'Đáy rộng 22 cm cho hộp nằm phẳng; dán quai bằng keo nóng, chịu tải 8 kg',sw:'#012850',model:true},
+ {id:'toteS',grp:'Túi xách giao hàng',code:'PK-02',name:'Delivery Tote S',sub:'Túi giấy quai xoắn đáy rộng',size:'260 × 170 × 250',mat:'Kraft nâu 100 gsm, quai giấy xoắn',print:'Flexo 2 màu như PK-01',holds:'1 Boil Bag + 1–2 hộp',moq:3000,use:0.7,note:'Cùng file in với PK-01, chỉ đổi khuôn',sw:'#012850'},
+ {id:'thermo',grp:'Túi xách giao hàng',code:'PK-03',name:'Túi giữ nhiệt tái sử dụng',sub:'Cho đơn trên 1 triệu',size:'350 × 250 × 280',mat:'Vải không dệt 80 gsm + màng nhôm, khóa kéo',print:'In lụa 1 màu kem trên navy',holds:"Captain's Bag hoặc 4 Boil Bag",moq:500,use:0.05,note:'Khách trả lại được giảm 20.000₫',sw:'#012850'},
+ {id:'boil',grp:'Bao bì món ăn',code:'PK-04',name:'Boil Bag · túi ngoài',sub:'Túi kraft đáy vuông có cửa sổ',size:'200 × 120 × 320',mat:'Kraft nâu 80 gsm tráng PE chống dầu, cửa sổ PET 100 × 80',print:'Flexo 2 màu: băng navy + chữ đỏ',holds:'1 túi trong, 1–1,2 kg hải sản',moq:5000,use:0.85,note:'Gấp miệng 30 mm, dán tem PK-11 ngang mép gấp',sw:'#C69C6D',model:true},
+ {id:'inner',grp:'Bao bì món ăn',code:'PK-05',name:'Boil Bag · túi trong',sub:'Túi hàn nhiệt chịu nhiệt',size:'250 × 350, dày 80 µm',mat:'Màng PA/PE 2 lớp, chịu 100–110°C',print:'Không in (túi trơn)',holds:'Hải sản + sốt',moq:'10 kg',use:0.85,note:'Hàn miệng bằng máy hàn dập tại quầy',sw:'#E9EEF0'},
+ {id:'roll',grp:'Bao bì món ăn',code:'PK-06',name:'Roll Box',sub:'Hộp kraft nắp gập kiểu hot dog',size:'200 × 90 × 70',mat:'Kraft 300 gsm tráng PE một mặt',print:'Offset 2 màu: sọc navy + logo đỏ',holds:'1 lobster / crab roll + dưa muối',moq:2000,use:0.35,note:'Lót giấy PK-10 bên trong',sw:'#C69C6D',model:true},
+ {id:'basket',grp:'Bao bì món ăn',code:'PK-07',name:'Basket Box',sub:'Hộp giấy nắp gập đựng đồ chiên',size:'150 × 110 × 70 (≈ 1.000 ml)',mat:'Duplex trắng 350 gsm tráng PE chống dầu',print:'Offset đỏ toàn khối + băng navy + chữ kem',holds:'Fish & chips, calamari, popcorn shrimp',moq:3000,use:0.4,note:'Bế 6 lỗ thoát hơi Ø4 hai bên hông',sw:'#EC2201',model:true},
+ {id:'soup',grp:'Bao bì món ăn',code:'PK-08',name:'Tô súp 16 oz + nắp giấy',sub:'Tô giấy kraft 2 lớp PE',size:'Ø 115 × Ø 92 × 80 (500 ml)',mat:'Kraft 2 lớp PE, nắp giấy kraft',print:'Flexo 1 màu navy',holds:'Clam chowder, crab bisque',moq:5000,use:0.15,note:'Có thể dùng tô trơn + tem Ø50 khi chưa đủ MOQ',sw:'#C69C6D',model:true},
+ {id:'sauce',grp:'Bao bì món ăn',code:'PK-09',name:'Hũ sốt 2 oz',sub:'Hũ nhựa PP nắp trong',size:'Ø 62 × Ø 45 × 35 (60 ml)',mat:'PP chịu nhiệt 120°C, nắp PP trong',print:'Không in; dán tem màu Ø40 trên nắp',holds:'4 loại sốt, phân biệt bằng màu tem',moq:'2.500 (1 thùng)',use:2.2,note:'Dùng tem màu thay vì nắp màu: không cần MOQ đúc màu riêng',sw:'#FFBD59',model:true},
+ {id:'cup',grp:'Bao bì món ăn',code:'PK-10',name:'Ly nước 16 oz + nắp cầu',sub:'Ly PET trong',size:'Ø 95 × Ø 60 × 127 (500 ml)',mat:'PET trong, nắp cầu PET có lỗ ống hút',print:'In lụa 1 màu navy + 1 màu đỏ',holds:'Lemonade, trà đào sả',moq:5000,use:0.6,note:'Ống hút giấy Ø8, bọc giấy riêng',sw:'#F4DC6B',model:true},
+ {id:'paper',grp:'Phụ kiện & nhãn',code:'PK-11',name:'Giấy chống dầu in pattern',sub:'Lót hộp và trải bàn boil',size:'300 × 400',mat:'Giấy chống dầu 40 gsm',print:'Flexo 1 màu đỏ (claw pattern)',holds:'1 tờ mỗi Boil Bag / Roll',moq:10000,use:1.2,note:'Cắt tờ sẵn, đóng gói 500 tờ / ram',sw:'#FFF4E6'},
+ {id:'kit',grp:'Phụ kiện & nhãn',code:'PK-12',name:'Hands-on Kit pouch',sub:'Túi giấy dẹt đựng dụng cụ',size:'120 × 200',mat:'Kraft trắng 60 gsm',print:'Flexo 1 màu navy',holds:'Bao tay PE, khăn ướt, kẹp và que PP, yếm nilon',moq:5000,use:0.9,note:'Đóng sẵn tại kho, không đóng tại quầy',sw:'#FFF4E6',model:true},
+ {id:'label',grp:'Phụ kiện & nhãn',code:'PK-13',name:'Tem thông tin đơn',sub:'Decal nhiệt in tại quầy',size:'100 × 75',mat:'Decal cảm nhiệt trực tiếp, lõi 40 mm',print:'In sẵn khung đỏ 1 màu; nội dung in nhiệt',holds:'Món, sốt, mức cay, giờ đóng gói, QR',moq:'20 cuộn × 500 tem',use:1.6,note:'Khổ 4 inch, chạy được trên máy in tem phổ thông',sw:'#FFFFFF'},
+ {id:'seal',grp:'Phụ kiện & nhãn',code:'PK-14',name:'Tem niêm phong “Chín tới”',sub:'Decal vỡ chống mở',size:'Ø 50',mat:'Decal giấy vỡ (destructible), bế demi',print:'Offset 2 màu đỏ + kem',holds:'1 tem mỗi túi',moq:5000,use:1,note:'Tem rách khi bóc, khách biết túi đã bị mở',sw:'#EC2201'},
+ {id:'bib',grp:'Đồ nghề ăn tại bàn',code:'PK-15',name:'Yếm nilon in logo',sub:'Yếm PE dùng một lần, dây buộc liền',size:'500 × 700, dày 20 µm',mat:'LDPE trong mờ',print:'Flexo 2 màu: đỏ + navy (icon 9C, “Crack it open”)',holds:'1 yếm mỗi khách',moq:10000,use:2.2,note:'Gấp 4 trong Hands-on Kit; store treo cuộn 200 cái',sw:'#FFFFFF',model:true},
+ {id:'gloves',grp:'Đồ nghề ăn tại bàn',code:'PK-16',name:'Bao tay nilon PE',sub:'Găng dùng một lần, free size',size:'Dài 270, dày 15 µm',mat:'HDPE nhám chống trơn',print:'Không in',holds:'2 đôi mỗi khách, đóng sẵn trong kit',moq:'Thùng 10.000 chiếc',use:8.8,note:'Tính theo chiếc: 2,2 khách × 2 đôi',sw:'#E9EEF0',model:true},
+ {id:'nitrile',grp:'Đồ nghề ăn tại bàn',code:'PK-17',name:'Bao tay nitrile navy',sub:"Găng cao cấp cho Captain's Bag và ăn tại store",size:'Size M/L, dài 240, dày 0,1',mat:'Nitrile không bột, màu navy',print:'Không in; nhãn hộp in logo',holds:'1 đôi mỗi khách',moq:'Hộp 100 chiếc',use:0.6,note:'Không dùng latex để tránh dị ứng',sw:'#012850'},
+ {id:'table',grp:'Đồ nghề ăn tại bàn',code:'PK-18',name:'Tấm trải bàn “Boil Zone”',sub:'Tấm nilon trải bàn 4 người',size:'900 × 1200, dày 30 µm, gấp 8',mat:'LDPE màu kem đục',print:'Flexo 2 màu: đỏ + navy',holds:'Trải dưới cả đơn; vòng giữa để đổ túi',moq:5000,use:0.85,note:'Store dùng cuộn khổ 1000 mm × 50 m, cùng file in',sw:'#FFF4E6',model:true},
+ {id:'tools',grp:'Đồ nghề ăn tại bàn',code:'PK-19',name:'Kẹp càng',sub:'Kẹp bẻ càng cán đỏ',size:'Dài 175 (inox) · 130 (nhựa)',mat:'Inox 304 cán PP đỏ; bản PP dùng một lần',print:'Khắc laser icon 9C trên cán',holds:'1 kẹp mỗi khách',moq:'500 inox · 5.000 PP',use:2.2,note:'Store dùng inox và rửa lại; đơn giao hàng dùng bản PP',sw:'#EC2201',model:true},
+ {id:'pick',grp:'Đồ nghề ăn tại bàn',code:'PK-20',name:'Que lấy thịt',sub:'Que hai chấu',size:'Dài 160',mat:'PP đỏ dùng một lần; inox cho store',print:'Dập nổi chữ 9Crabs',holds:'1 que mỗi khách',moq:10000,use:2.2,note:'Đóng chung túi với kẹp PP',sw:'#EC2201'},
+ {id:'wipes',grp:'Đồ nghề ăn tại bàn',code:'PK-21',name:'Khăn ướt gói lẻ',sub:'Khăn ướt hương chanh',size:'Gói 60 × 80, khăn 150 × 200',mat:'Vải không dệt, không cồn',print:'In ống đồng 4 màu, nền navy',holds:'2 gói mỗi khách',moq:20000,use:4.4,note:'In hạn dùng và mã lô trên gói',sw:'#012850',model:true},
+ {id:'bucket',grp:'Đồ nghề ăn tại bàn',code:'PK-22',name:'Xô kraft đựng vỏ',sub:'Xô giấy cho vỏ cua, vỏ tôm',size:'Ø 150 × Ø 120 × 120 (1.300 ml)',mat:'Kraft 2 lớp PE',print:'Flexo 1 màu navy: “Vỏ ở đây”',holds:'1 xô mỗi đơn boil',moq:5000,use:0.85,note:'Xếp lồng vào nhau để gọn trong túi giao hàng',sw:'#C69C6D',model:true},
+];
+const fmt=n=>typeof n==='number'?n.toLocaleString('vi-VN'):n;
+const sizeMM=s=>{const i=s.indexOf(' (');return i<0?s+' mm':s.slice(0,i)+' mm'+s.slice(i)};
+
+/* Spec table */
+(()=>{const tb=document.getElementById('specBody');let g='';let h='';
+ ITEMS.forEach(it=>{if(it.grp!==g){g=it.grp;h+=`<tr class="group"><td colspan="8">${g}</td></tr>`}
+  h+=`<tr><td class="code">${it.code}</td><td><span class="n">${it.name}</span><span class="s">${it.sub}</span></td><td class="size">${it.size}</td><td>${it.mat}</td><td>${it.print}</td><td>${it.holds}</td><td class="num">${fmt(it.moq)}</td><td>${it.note}</td></tr>`});
+ tb.innerHTML=h})();
+
+/* Calculator */
+(()=>{const o=document.getElementById('orders'),s=document.getElementById('stores'),d=document.getElementById('days'),tb=document.getElementById('calcBody');
+ function run(){const ov=+o.value,sv=+s.value,dv=+d.value;
+  document.getElementById('ordersVal').textContent=ov;document.getElementById('storesVal').textContent=sv;document.getElementById('daysVal').textContent=dv;
+  const total=ov*sv*dv;
+  tb.innerHTML=ITEMS.map(it=>{const need=Math.ceil(total*it.use*1.08/100)*100;const m=typeof it.moq==='number'?it.moq:null;
+   const pill=m==null?'<span class="pill ok">Hàng có sẵn</span>':need>=m?'<span class="pill ok">Đủ MOQ</span>':`<span class="pill warn">Thiếu ${fmt(m-need)} · đặt theo MOQ</span>`;
+   return `<tr><td class="code">${it.code}</td><td>${it.name}</td><td class="num mono">${String(it.use).replace('.',',')}</td><td class="num mono"><b>${fmt(need)}</b></td><td>${pill}</td></tr>`}).join('')}
+ [o,s,d].forEach(e=>e.addEventListener('input',run));run()})();
+
+/* 3D studio */
+(async()=>{
+ const stage=document.getElementById('stage'),card=document.getElementById('infoCard'),picker=document.getElementById('picker');
+ const MODELED=ITEMS.filter(i=>i.model);
+ function showCard(it){if(!it){card.innerHTML='<span class="code">CHỌN MỘT MÓN</span><b>'+ITEMS.length+' hạng mục · '+MODELED.length+' món đang hiển thị</b><p style="font-size:.86rem;color:#536878">Bấm vào bao bì trong studio hoặc trong danh sách bên cạnh để xem quy cách.</p>';return}
+  card.innerHTML=`<span class="code">${it.code}</span><b>${it.name}</b><dl><dt>Quy cách</dt><dd class="mono">${sizeMM(it.size)}</dd><dt>Chất liệu</dt><dd>${it.mat}</dd><dt>In</dt><dd>${it.print}</dd><dt>Chứa</dt><dd>${it.holds}</dd></dl>`}
+ showCard(null);
+ const btns={};
+ MODELED.forEach(it=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed','false');b.innerHTML=`<span class="sw" style="background:${it.sw}"></span><span>${it.name}</span><span class="dim">${it.size.split(' (')[0].split(',')[0].replace(/ · .*/,'')}</span>`;b.addEventListener('click',()=>select(it.id,true));picker.appendChild(b);btns[it.id]=b});
+ const rb=document.createElement('button');rb.type='button';rb.className='reset';rb.textContent='Xem toàn cảnh';rb.addEventListener('click',()=>select(null,true));picker.appendChild(rb);
+
+ if(!window.THREE){stage.insertAdjacentHTML('beforeend','<div class="fallback">Không tải được thư viện 3D. Bảng quy cách bên dưới vẫn đầy đủ.</div>');return}
+ try{await Promise.race([document.fonts.load('900 64px Archivo'),document.fonts.load('500 32px "IBM Plex Mono"'),new Promise(r=>setTimeout(r,2500))])}catch(e){}
+ let LG=null;try{const lk=await window.LOGO9;LG=lk&&lk.canvas}catch(e){}
+
+ let renderer;
+ try{renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true})}catch(e){stage.insertAdjacentHTML('beforeend','<div class="fallback">Trình duyệt này chưa bật WebGL nên không hiển thị được 3D. Bảng quy cách bên dưới vẫn đầy đủ.</div>');return}
+ renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputEncoding=THREE.sRGBEncoding;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+ stage.prepend(renderer.domElement);
+ const scene=new THREE.Scene();const BG=new THREE.Color('#F3E6D3');scene.background=BG;scene.fog=new THREE.Fog(BG,280,560);
+ const cam=new THREE.PerspectiveCamera(32,1,1,800);
+ const controls=new THREE.OrbitControls(cam,renderer.domElement);controls.enableDamping=true;controls.maxPolarAngle=Math.PI*0.48;controls.minDistance=25;controls.maxDistance=420;
+ const HOME={pos:new THREE.Vector3(6,108,176),tgt:new THREE.Vector3(2,2,10)};
+ cam.position.copy(HOME.pos);controls.target.copy(HOME.tgt);
+
+ scene.add(new THREE.HemisphereLight(0xfff6ea,0xcbb89c,0.75));
+ const sun=new THREE.DirectionalLight(0xffffff,1.05);sun.position.set(35,80,55);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
+ Object.assign(sun.shadow.camera,{left:-80,right:80,top:80,bottom:-80,near:10,far:250});sun.shadow.bias=-0.0004;sun.shadow.radius=4;scene.add(sun);
+ const fill=new THREE.DirectionalLight(0xdfe9ff,0.35);fill.position.set(-60,40,-30);scene.add(fill);
+ const floor=new THREE.Mesh(new THREE.PlaneGeometry(800,800),new THREE.MeshStandardMaterial({color:lin('#EFE0CB'),roughness:1}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
+
+ function lin(h){return new THREE.Color(h).convertSRGBToLinear()}
+ let PX=40;
+ function tex(w,h,draw,alpha){const c=document.createElement('canvas');c.width=Math.round(w*PX);c.height=Math.round(h*PX);const x=c.getContext('2d');x.scale(PX,PX);draw(x,w,h);const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;t.anisotropy=renderer.capabilities.getMaxAnisotropy();return t}
+ function txt(x,s,cx,cy,size,color,opt={}){x.save();x.setTransform(1,0,0,1,0,0);x.font=`${opt.w||500} ${size*PX}px ${opt.f||'"IBM Plex Mono",Consolas,monospace'}`;x.fillStyle=color;x.textAlign=opt.a||'center';x.textBaseline='middle';if('letterSpacing' in x&&opt.ls)x.letterSpacing=(opt.ls*PX)+'px';
+  if(opt.rot){x.translate(cx*PX,cy*PX);x.rotate(opt.rot);x.fillText(s,0,0)}else x.fillText(s,cx*PX,cy*PX);x.restore()}
+ function mark(x,name,cx,cy,w,alpha){if(!LG||!LG[name])return;const c=LG[name];const h=w*c.height/c.width;x.save();if(alpha!=null)x.globalAlpha=alpha;x.drawImage(c,cx-w/2,cy-h/2,w,h);x.restore()}
+ function wm(x,cx,cy,size,c9,cC){const v=(c9==='#FFF4E6'&&cC==='#FFF4E6')?'monoCream':(c9==='#FFF4E6'?'reverse':'primary');mark(x,v,cx,cy,size*3.1)}
+ function kraft(x,w,h,base='#C49A6A'){x.fillStyle=base;x.fillRect(0,0,w,h);const n=Math.round(w*h*18);for(let i=0;i<n;i++){const d=Math.random()<.55;x.fillStyle=d?`rgba(92,58,24,${Math.random()*.12})`:`rgba(255,240,214,${Math.random()*.14})`;x.fillRect(Math.random()*w,Math.random()*h,.03+Math.random()*.12,.02+Math.random()*.04)}}
+ function claw(x,cx,cy,r,col){let v='icon',a=null;if(col.indexOf('rgba')===0){a=parseFloat(col.split(',')[3]);if(col.indexOf('255,99,64')>0)v='iconReverse'}else if(col==='#FFF4E6')v='iconMono';mark(x,v,cx,cy,r*2.8,a)}
+ function mat(t,o={}){return new THREE.MeshStandardMaterial(Object.assign({map:t,roughness:.86,metalness:0},o))}
+ function shadowy(g){g.traverse(m=>{if(m.isMesh){m.castShadow=true;m.receiveShadow=true}});return g}
+ const groups={};
+ function add(id,g,x,z,ry=0){g.position.set(x,0,z);g.rotation.y=ry;g.userData.id=id;shadowy(g);scene.add(g);groups[id]=g}
+
+ /* PK-04 Boil Bag 200×120×320 */
+ (()=>{const W=20,D=12,H=32;
+  const front=tex(W,H,(x)=>{kraft(x,W,H);
+   x.fillStyle='rgba(70,44,18,.22)';x.fillRect(0,0,W,3);x.fillStyle='rgba(70,44,18,.35)';x.fillRect(0,2.9,W,.12);
+   x.fillStyle='#012850';x.fillRect(0,4.2,W,6.2);wm(x,W/2,7.35,3.6,'#FFF4E6','#EC2201');
+   const wx=4.5,wy=12,ww=11,wh=8.6;const g=x.createLinearGradient(0,wy,0,wy+wh);g.addColorStop(0,'#E06A2C');g.addColorStop(1,'#B8401A');x.fillStyle=g;x.fillRect(wx,wy,ww,wh);
+   [[7,15,2.1,'#E2401B'],[11,14.6,2.4,'#EC4A1F'],[13.6,17.8,1.9,'#D93A16'],[8.4,18.6,1.6,'#F06A2A']].forEach(([cx,cy,r,c])=>{x.fillStyle=c;x.beginPath();x.ellipse(cx,cy,r,r*.78,0,0,7);x.fill();x.fillStyle='rgba(255,220,150,.35)';x.beginPath();x.ellipse(cx-r*.3,cy-r*.35,r*.35,r*.18,-.4,0,7);x.fill()});
+   x.fillStyle='#FFC94A';x.beginPath();x.ellipse(10.5,19.4,1.9,.75,-.2,0,7);x.fill();x.fillStyle='#F2B23A';for(let i=0;i<6;i++){x.fillRect(9+i*.55,19.05,.3,.6)}
+   x.fillStyle='#E9C27A';x.beginPath();x.ellipse(5.6,19.6,1,.8,0,0,7);x.fill();
+   const gl=x.createLinearGradient(wx,wy,wx+ww,wy+wh);gl.addColorStop(0,'rgba(255,255,255,.45)');gl.addColorStop(.35,'rgba(255,255,255,.05)');gl.addColorStop(.6,'rgba(255,255,255,.18)');gl.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=gl;x.fillRect(wx,wy,ww,wh);
+   x.strokeStyle='rgba(60,36,12,.5)';x.lineWidth=.08;x.strokeRect(wx,wy,ww,wh);
+   x.fillStyle='#FFFFFF';x.fillRect(3.6,22.4,12.8,7.8);x.strokeStyle='#EC2201';x.lineWidth=.12;x.strokeRect(3.9,22.7,12.2,7.2);
+   txt(x,'CUA BOIL BAG · 1 KG',10,23.9,.62,'#012850',{w:500});x.fillStyle='#012850';x.fillRect(4.3,24.6,11.4,.04);
+   txt(x,'SỐT  SIGNATURE 9',4.5,25.5,.52,'#012850',{a:'left'});txt(x,'CAY  ▲▲▲△△',4.5,26.4,.52,'#012850',{a:'left'});
+   txt(x,'ĐÓNG GÓI 18:42 · 02.11',4.5,27.3,.52,'#012850',{a:'left'});txt(x,'NGON NHẤT TRONG 45\'',4.5,28.2,.52,'#EC2201',{a:'left'});
+   x.fillStyle='#012850';for(let i=0;i<7;i++)for(let j=0;j<7;j++)if((i*3+j*5+i*j)%3!==1)x.fillRect(13.2+i*.33,25.1+j*.33,.3,.3);
+   x.fillStyle='#EC2201';x.beginPath();x.arc(W/2,2.95,2.5,0,7);x.fill();x.strokeStyle='#FFF4E6';x.lineWidth=.08;x.beginPath();x.arc(W/2,2.95,2.05,0,7);x.stroke();
+   mark(x,'iconMono',W/2,2.95,3.3);
+  });
+  const side=tex(D,H,(x)=>{kraft(x,D,H,'#BE9262');x.fillStyle='rgba(70,44,18,.25)';x.fillRect(D/2-.06,3,.12,H-3);x.fillStyle='rgba(70,44,18,.22)';x.fillRect(0,0,D,3);
+   txt(x,'CHÍN TỚI · GIAO TỚI',D/2,18,.62,'#012850',{rot:-Math.PI/2,ls:.12})});
+  const back=tex(W,H,(x)=>{kraft(x,W,H,'#BF9465');x.fillStyle='rgba(70,44,18,.22)';x.fillRect(0,0,W,3);
+   for(let i=0;i<4;i++)for(let j=0;j<5;j++)claw(x,3+i*4.7,8+j*4.6,1.1,'rgba(236,34,1,.55)',.28);
+   txt(x,'Crack it open. Dip. Repeat.',W/2,29.5,.85,'#012850',{w:600,f:'"Instrument Sans",Arial,sans-serif'})});
+  const plain=tex(4,4,x=>kraft(x,4,4,'#B98C5C'));
+  const g=new THREE.Group();const m=new THREE.Mesh(new THREE.BoxGeometry(W,H,D),[mat(side),mat(side),mat(plain),mat(plain),mat(front),mat(back)]);m.position.y=H/2;g.add(m);
+  add('boil',g,-15,2,0.12)})();
+
+ /* PK-01 Tote L 320×220×250 */
+ (()=>{const W=32,D=22,H=25;
+  const front=tex(W,H,(x)=>{kraft(x,W,H,'#0B2C52');x.fillStyle='rgba(1,40,80,.86)';x.fillRect(0,0,W,H);
+   for(let i=0;i<W*H*6;i++){x.fillStyle=`rgba(255,255,255,${Math.random()*.035})`;x.fillRect(Math.random()*W,Math.random()*H,.1,.03)}
+   x.fillStyle='rgba(0,0,0,.25)';x.fillRect(0,0,W,3.2);x.fillStyle='rgba(0,0,0,.18)';x.fillRect(0,3.2,W,.1);
+   wm(x,W/2,11.6,5.2,'#FFF4E6','#FF6340');
+   txt(x,'CHÍN TỚI · GIAO TỚI',W/2,17.2,.95,'#A9CBDC',{ls:.25});
+   txt(x,'AMERICAN COASTAL SEAFOOD · SINCE 2026',W/2,22.6,.6,'#A9CBDC',{ls:.12});
+   x.fillStyle='#EC2201';x.beginPath();x.arc(W/2,0,2.5,0,Math.PI);x.fill();mark(x,'iconMono',W/2,1.15,2.4)});
+  const side=tex(D,H,(x)=>{x.fillStyle='#062E57';x.fillRect(0,0,D,H);x.fillStyle='rgba(0,0,0,.28)';x.fillRect(D/2-.07,0,.14,H);
+   x.strokeStyle='rgba(0,0,0,.2)';x.lineWidth=.1;x.beginPath();x.moveTo(0,H-5.5);x.lineTo(D/2,H-.2);x.lineTo(D,H-5.5);x.stroke();
+   txt(x,'@9CRABS.VN',D/2,9,.9,'#FFF4E6',{ls:.15})});
+  const back=tex(W,H,(x)=>{x.fillStyle='#03305A';x.fillRect(0,0,W,H);for(let i=0;i<6;i++)for(let j=0;j<4;j++)claw(x,3.5+i*5,6+j*5.2,1.2,'rgba(255,99,64,.4)',.3)});
+  const top=tex(W,D,(x)=>{x.fillStyle='#1F1408';x.fillRect(0,0,W,D);const g=x.createRadialGradient(W/2,D/2,1,W/2,D/2,W/1.6);g.addColorStop(0,'rgba(196,154,106,.55)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,W,D)});
+  const navyM=new THREE.MeshStandardMaterial({color:lin('#012850'),roughness:.9});
+  const g=new THREE.Group();const m=new THREE.Mesh(new THREE.BoxGeometry(W,H,D),[mat(side),mat(side),mat(top),new THREE.MeshStandardMaterial({color:lin('#012850')}),mat(front),mat(back)]);m.position.y=H/2;g.add(m);
+  const handleMat=new THREE.MeshStandardMaterial({color:lin('#0A2340'),roughness:.95});
+  [D/2-1.1,-D/2+1.1].forEach(z=>{const c=new THREE.CatmullRomCurve3([new THREE.Vector3(-6,H-1.5,z),new THREE.Vector3(-5.5,H+5,z),new THREE.Vector3(0,H+9,z),new THREE.Vector3(5.5,H+5,z),new THREE.Vector3(6,H-1.5,z)]);g.add(new THREE.Mesh(new THREE.TubeGeometry(c,48,.32,10,false),handleMat))});
+  add('tote',g,-47,-4,0.28)})();
+
+ /* PK-06 Roll Box 200×90×70 */
+ (()=>{const L=20,Wd=9,H=7;
+  const topT=tex(L,Wd,(x)=>{kraft(x,L,Wd);x.fillStyle='#012850';x.fillRect(0,.9,L,.7);x.fillRect(0,Wd-1.6,L,.7);wm(x,L/2,Wd/2-.2,2.3,'#012850','#EC2201');txt(x,'LOBSTER ROLL',L/2,Wd/2+1.75,.62,'#012850',{ls:.2})});
+  const frontT=tex(L,H,(x)=>{kraft(x,L,H);x.fillStyle='rgba(70,44,18,.4)';x.fillRect(0,2.4,L,.08);x.fillStyle='#012850';x.fillRect(0,4.6,L,.45);txt(x,'NEW ENGLAND STYLE · 9CRABS',L/2,3.5,.55,'#012850',{ls:.14})});
+  const sideT=tex(Wd,H,(x)=>{kraft(x,Wd,H,'#BB8F5E');x.fillStyle='rgba(70,44,18,.35)';x.fillRect(0,2.4,Wd,.08);x.beginPath();x.moveTo(1,0);x.lineTo(Wd-1,0);x.lineTo(Wd-1.8,2.4);x.lineTo(1.8,2.4);x.closePath();x.fillStyle='rgba(70,44,18,.12)';x.fill()});
+  const plain=tex(4,4,x=>kraft(x,4,4,'#B98C5C'));
+  const box=()=>{const g=new THREE.Group();const m=new THREE.Mesh(new THREE.BoxGeometry(L,H,Wd),[mat(sideT),mat(sideT),mat(topT),mat(plain),mat(frontT),mat(frontT)]);m.position.y=H/2;g.add(m);return g};
+  const g=new THREE.Group();const a=box();g.add(a);const b=box();b.position.set(0,0,-11);b.rotation.y=0.04;g.add(b);
+  add('roll',g,6,16,-0.12)})();
+
+ /* PK-07 Basket Box 150×110×70 */
+ (()=>{const L=15,Wd=11,H=7;
+  const red='#EC2201';
+  const front=tex(L,H,(x)=>{x.fillStyle=red;x.fillRect(0,0,L,H);x.fillStyle='#012850';x.fillRect(0,0,L,1.7);txt(x,'FRIED · CRISPY · 9CRABS',L/2,.87,.5,'#FFF4E6',{ls:.14});wm(x,L/2,4.3,2.4,'#FFF4E6','#FFF4E6')});
+  const side=tex(Wd,H,(x)=>{x.fillStyle='#D91F02';x.fillRect(0,0,Wd,H);x.fillStyle='#012850';x.fillRect(0,0,Wd,1.7);x.fillStyle='rgba(60,0,0,.75)';for(let i=0;i<3;i++)for(let j=0;j<2;j++){x.beginPath();x.arc(Wd/2-1.6+i*1.6,3.6+j*1.5,.2,0,7);x.fill()}});
+  const top=tex(L,Wd,(x)=>{x.fillStyle=red;x.fillRect(0,0,L,Wd);x.strokeStyle='rgba(90,0,0,.45)';x.lineWidth=.08;x.beginPath();x.moveTo(0,Wd/2);x.lineTo(L,Wd/2);x.moveTo(3,0);x.lineTo(3,Wd);x.moveTo(L-3,0);x.lineTo(L-3,Wd);x.stroke();
+   x.fillStyle='rgba(255,255,255,.08)';x.fillRect(3,0,L-6,Wd/2);claw(x,L/2,Wd/2-2.6,1.2,'#FFF4E6',.32);txt(x,'MỞ TỪ ĐÂY',L/2,Wd/2+1.2,.5,'#FFF4E6',{ls:.2})});
+  const g=new THREE.Group();const m=new THREE.Mesh(new THREE.BoxGeometry(L,H,Wd),[mat(side,{roughness:.55}),mat(side,{roughness:.55}),mat(top,{roughness:.55}),new THREE.MeshStandardMaterial({color:lin('#C81C01')}),mat(front,{roughness:.55}),mat(front,{roughness:.55})]);m.position.y=H/2;g.add(m);
+  add('basket',g,10,-12,0.22)})();
+
+ /* PK-08 Soup bowl Ø115 × Ø92 × 80 */
+ (()=>{const rt=5.75,rb=4.6,H=8;const C=2*Math.PI*rt;
+  const sideT=tex(C,H,(x)=>{kraft(x,C,H);x.fillStyle='#012850';x.fillRect(0,H-1.6,C,.5);wm(x,C/2,3.4,2.2,'#012850','#EC2201');txt(x,'CLAM CHOWDER · 500 ML',C/2,5.6,.5,'#012850',{ls:.14});claw(x,1.6,3.4,1.2,'#EC2201');claw(x,C-1.6,3.4,1.2,'#EC2201')});
+  const lidT=tex(12.4,12.4,(x)=>{kraft(x,12.4,12.4,'#C9A273');x.strokeStyle='rgba(70,44,18,.35)';x.lineWidth=.1;x.beginPath();x.arc(6.2,6.2,5.2,0,7);x.stroke();x.beginPath();x.arc(6.2,6.2,4.3,0,7);x.stroke();
+   x.fillStyle='#EC2201';x.beginPath();x.arc(6.2,6.2,2.5,0,7);x.fill();mark(x,'iconMono',6.2,6.15,3.4)});
+  const g=new THREE.Group();
+  const body=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,H,72,1,false,Math.PI),[mat(sideT),mat(lidT),new THREE.MeshStandardMaterial({color:lin('#B98C5C')})]);body.position.y=H/2;g.add(body);
+  const rim=new THREE.Mesh(new THREE.TorusGeometry(rt,.18,10,72),new THREE.MeshStandardMaterial({color:lin('#C49A6A'),roughness:.9}));rim.rotation.x=Math.PI/2;rim.position.y=H+.1;g.add(rim);
+  const lid=new THREE.Mesh(new THREE.CylinderGeometry(rt+.25,rt+.25,.7,72),[new THREE.MeshStandardMaterial({color:lin('#C49A6A'),roughness:.9}),mat(lidT),mat(lidT)]);lid.position.y=H+.35;g.add(lid);
+  add('soup',g,28,-9,0)})();
+
+ /* PK-09 Sauce cups Ø62 × Ø45 × 35 */
+ (()=>{const sauces=[['#F2B544','#FFBD59','GARLIC BUTTER'],['#D8471F','#EC2201','CAJUN FIRE'],['#E9DB8E','#D4E8E5','LEMON PEPPER'],['#E5782A','#012850','SIGNATURE 9']];
+  const g=new THREE.Group();
+  sauces.forEach(([fill,tag,name],i)=>{const cg=new THREE.Group();
+   const body=new THREE.Mesh(new THREE.CylinderGeometry(3.1,2.25,3.5,48,1,true),new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.28,roughness:.12,side:THREE.DoubleSide,depthWrite:false}));body.position.y=1.75;cg.add(body);
+   const s=new THREE.Mesh(new THREE.CylinderGeometry(2.9,2.25,3.1,48),new THREE.MeshStandardMaterial({color:lin(fill),roughness:.35}));s.position.y=1.6;cg.add(s);
+   const lid=new THREE.Mesh(new THREE.CylinderGeometry(3.25,3.25,.4,48),new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.35,roughness:.1,depthWrite:false}));lid.position.y=3.65;cg.add(lid);
+   const stT=tex(4,4,(x)=>{x.fillStyle=tag;x.beginPath();x.arc(2,2,2,0,7);x.fill();const dark=tag==='#012850'||tag==='#EC2201';const c=dark?'#FFF4E6':'#012850';
+    mark(x,dark?'iconMono':'icon',2,1.55,2.2);txt(x,name,2,2.95,.33,c,{ls:.04})});
+   const st=new THREE.Mesh(new THREE.CylinderGeometry(2,2,.03,48),[new THREE.MeshStandardMaterial({color:lin(tag)}),mat(stT,{roughness:.6}),mat(stT)]);st.position.y=3.87;st.rotation.y=-0.4;cg.add(st);
+   cg.position.set(i*7.2,0,0);g.add(cg)});
+  add('sauce',g,22,12,0)})();
+
+ /* PK-10 Drink cup Ø95 × Ø60 × 127 */
+ (()=>{const rt=4.75,rb=3,H=12.7;const C=2*Math.PI*rt;
+  const g=new THREE.Group();
+  const liquid=new THREE.Mesh(new THREE.CylinderGeometry(rt-.35-(rt-rb)*.15,rb-.2,H*.84,48),new THREE.MeshStandardMaterial({color:lin('#F4DC6B'),roughness:.25,transparent:true,opacity:.92}));liquid.position.y=H*.42+.1;g.add(liquid);
+  [[-1.2,7.2],[1.4,5.1],[.2,9.4]].forEach(([dx,y])=>{const ice=new THREE.Mesh(new THREE.BoxGeometry(1.6,1.5,1.6),new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.5,roughness:.1}));ice.position.set(dx,y,.4);ice.rotation.set(.4,dx,.2);g.add(ice)});
+  const lemon=new THREE.Mesh(new THREE.CylinderGeometry(2.1,2.1,.3,32),new THREE.MeshStandardMaterial({color:lin('#FFF0A6'),roughness:.5}));lemon.position.set(.8,6.4,2.6);lemon.rotation.x=Math.PI/2.2;g.add(lemon);
+  const body=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,H,64,1,true),new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.22,roughness:.06,side:THREE.DoubleSide,depthWrite:false}));body.position.y=H/2;g.add(body);
+  const printT=tex(C,H,(x)=>{x.clearRect(0,0,C,H);wm(x,C/2,6.2,2.1,'#012850','#EC2201');txt(x,'CHÍN TỚI · GIAO TỚI',C/2,8,.48,'#012850',{ls:.14})});
+  const pr=new THREE.Mesh(new THREE.CylinderGeometry(rt+.03,rb+.03,H,64,1,true,Math.PI),new THREE.MeshStandardMaterial({map:printT,transparent:true,roughness:.5,depthWrite:false}));pr.position.y=H/2;g.add(pr);
+  const dome=new THREE.Mesh(new THREE.SphereGeometry(rt+.1,48,16,0,Math.PI*2,0,Math.PI/2),new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.25,roughness:.05,depthWrite:false,side:THREE.DoubleSide}));dome.scale.y=.55;dome.position.y=H+.15;g.add(dome);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(rt+.1,.16,8,64),new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.5,roughness:.1}));ring.rotation.x=Math.PI/2;ring.position.y=H+.12;g.add(ring);
+  const straw=new THREE.Mesh(new THREE.CylinderGeometry(.4,.4,21,16),new THREE.MeshStandardMaterial({color:lin('#EC2201'),roughness:.6}));straw.position.set(1.2,H+1.5,0);straw.rotation.z=-0.18;g.add(straw);
+  add('cup',g,42,-8,0)})();
+
+ /* PK-12 Hands-on Kit pouch 120×200 */
+ (()=>{const W=12,L=20;
+  const t=tex(W,L,(x)=>{x.fillStyle='#FBF6EE';x.fillRect(0,0,W,L);for(let i=0;i<W*L*8;i++){x.fillStyle=`rgba(120,100,70,${Math.random()*.05})`;x.fillRect(Math.random()*W,Math.random()*L,.08,.03)}
+   x.fillStyle='rgba(1,40,80,.12)';x.fillRect(0,0,W,1.8);claw(x,W/2,5,1.6,'#012850',.45);
+   txt(x,'HANDS-ON',W/2,8.6,1.15,'#012850',{w:900,f:'Archivo,"Arial Black",sans-serif'});txt(x,'KIT',W/2,10.1,1.15,'#EC2201',{w:900,f:'Archivo,"Arial Black",sans-serif'});
+   ['BAO TAY','KHĂN ƯỚT','KẸP & QUE','YẾM NILON'].forEach((s,i)=>{txt(x,'—  '+s,W/2,12.6+i*1.05,.55,'#012850',{ls:.08})});
+   txt(x,'9CRABS',W/2,18.6,.55,'#536878',{ls:.3})});
+  const g=new THREE.Group();const m=new THREE.Mesh(new THREE.BoxGeometry(W,.8,L),[new THREE.MeshStandardMaterial({color:lin('#F1EADF')}),new THREE.MeshStandardMaterial({color:lin('#F1EADF')}),mat(t,{roughness:.9}),new THREE.MeshStandardMaterial({color:lin('#F1EADF')}),new THREE.MeshStandardMaterial({color:lin('#F1EADF')}),new THREE.MeshStandardMaterial({color:lin('#F1EADF')})]);m.position.y=.4;g.add(m);
+  add('kit',g,-30,26,-0.35)})();
+
+ /* PK-18 Table cover 900×1200, laid under the whole order */
+ (()=>{const W=120,D=90;const keep=PX;PX=10;
+  const t=tex(W,D,(x)=>{x.fillStyle='#FFF4E6';x.fillRect(0,0,W,D);
+   for(let i=0;i<14;i++)for(let j=0;j<12;j++)mark(x,'icon',3+i*9+(j%2)*4.5,4+j*7.6,4,.13);
+   x.strokeStyle='#012850';x.lineWidth=1.4;x.strokeRect(2.5,2.5,W-5,D-5);
+   x.fillStyle='#FFFFFF';x.beginPath();x.arc(W/2,D/2,22,0,7);x.fill();
+   x.setLineDash([3,2]);x.strokeStyle='#EC2201';x.lineWidth=.9;x.beginPath();x.arc(W/2,D/2,22,0,7);x.stroke();x.setLineDash([]);
+   txt(x,'BOIL ZONE',W/2,D/2-1.2,6,'#EC2201',{w:900,f:'Archivo,"Arial Black",sans-serif'});txt(x,'ĐỔ TÚI VÀO ĐÂY',W/2,D/2+5,2,'#012850',{ls:.4});
+   [['1','ĐEO YẾM',9,9],['2','ĐEO BAO TAY',W-40,9],['3','ĐỔ TÚI',9,D-9],['4','BẺ CÀNG',W-40,D-9]].forEach(([n,s,cx,cy])=>{x.fillStyle='#EC2201';x.beginPath();x.arc(cx,cy,2.4,0,7);x.fill();txt(x,n,cx,cy+.1,2.4,'#FFF4E6',{w:700});txt(x,s,cx+4,cy+.1,2,'#012850',{a:'left',ls:.3})});
+   mark(x,'primary',W/2,9.5,20)});
+  PX=keep;
+  const g=new THREE.Group();const m=new THREE.Mesh(new THREE.PlaneGeometry(W,D),new THREE.MeshStandardMaterial({map:t,roughness:.55,metalness:0}));m.rotation.x=-Math.PI/2;m.position.y=.03;m.receiveShadow=true;g.add(m);
+  g.position.set(-2,0,8);g.userData.id='table';scene.add(g);groups.table=g})();
+
+ /* PK-15 Bib 500×700, lying flat */
+ (()=>{const W=50,L=70;const keep=PX;PX=16;
+  const t=tex(W,L,(x)=>{x.clearRect(0,0,W,L);x.save();x.scale(W/320,L/340);
+    x.beginPath();x.moveTo(96,46);x.quadraticCurveTo(160,100,224,46);x.lineTo(262,52);x.quadraticCurveTo(276,58,276,76);x.lineTo(276,296);x.quadraticCurveTo(276,318,254,320);x.lineTo(66,320);x.quadraticCurveTo(44,318,44,296);x.lineTo(44,76);x.quadraticCurveTo(44,58,58,52);x.closePath();
+    x.fillStyle='rgba(255,255,255,.92)';x.fill();x.strokeStyle='#C9D2DA';x.lineWidth=2;x.stroke();
+    x.lineCap='round';x.lineWidth=7;x.beginPath();x.moveTo(96,46);x.quadraticCurveTo(78,18,52,12);x.moveTo(224,46);x.quadraticCurveTo(242,18,268,12);x.stroke();
+    x.restore();
+    mark(x,'icon',W/2,L*.44,W*.42);
+    txt(x,'CRACK IT OPEN',W/2,L*.67,3.1,'#EC2201',{w:900,f:'Archivo,"Arial Black",sans-serif'});
+    mark(x,'primary',W/2,L*.8,W*.26)});
+  PX=keep;
+  const g=new THREE.Group();const m=new THREE.Mesh(new THREE.PlaneGeometry(W,L),new THREE.MeshStandardMaterial({map:t,transparent:true,alphaTest:.05,roughness:.35,side:THREE.DoubleSide}));m.rotation.x=-Math.PI/2;m.position.y=.08;g.add(m);
+  add('bib',g,54,50,0.06)})();
+
+ /* PK-16 PE gloves, a pair lying flat */
+ (()=>{const s=.11,cmds=[['M',54,250],['L',50,200],['Q',34,182,18,150],['Q',16,136,30,140],['Q',42,146,50,160],['L',44,66],['Q',44,52,56,52],['Q',68,52,68,66],['L',70,118],['L',74,118],['L',74,34],['Q',74,20,87,20],['Q',100,20,100,34],['L',100,116],['L',104,116],['L',106,42],['Q',106,29,119,29],['Q',132,29,132,42],['L',130,120],['L',134,122],['L',136,72],['Q',136,60,148,60],['Q',160,60,160,72],['L',158,180],['L',150,250]];
+  const f=(a,b)=>[(a-90)*s,-(b-135)*s];const sh=new THREE.Shape();
+  cmds.forEach(c=>{if(c[0]==='M')sh.moveTo(...f(c[1],c[2]));else if(c[0]==='L')sh.lineTo(...f(c[1],c[2]));else sh.quadraticCurveTo(...f(c[1],c[2]),...f(c[3],c[4]))});
+  const geo=new THREE.ExtrudeGeometry(sh,{depth:.5,bevelEnabled:true,bevelThickness:.15,bevelSize:.15,bevelSegments:2});
+  const pe=new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.62,roughness:.22,side:THREE.DoubleSide});
+  const g=new THREE.Group();[[-7,1,.15],[8,-1,-.2]].forEach(([dx,sx,ry],i)=>{const m=new THREE.Mesh(geo,pe);m.rotation.x=-Math.PI/2;m.scale.x=i?-1:1;m.position.set(dx,.3,0);const w=new THREE.Group();w.add(m);w.rotation.y=ry;g.add(w)});
+  add('gloves',g,-55,33,0.25)})();
+
+ /* PK-19 cracker + PK-20 pick */
+ (()=>{const g=new THREE.Group();const steel=new THREE.MeshStandardMaterial({color:lin('#C9CED3'),metalness:.75,roughness:.3});const red=new THREE.MeshStandardMaterial({color:lin('#EC2201'),roughness:.5});
+  [-.14,.14].forEach(a=>{const arm=new THREE.Group();const b=new THREE.Mesh(new THREE.BoxGeometry(1,.5,17.5),steel);b.position.set(0,.6,8.75);arm.add(b);const gr=new THREE.Mesh(new THREE.BoxGeometry(1.4,.8,9),red);gr.position.set(0,.6,12.6);arm.add(gr);arm.rotation.y=a;g.add(arm)});
+  const hinge=new THREE.Mesh(new THREE.CylinderGeometry(.8,.8,.9,20),steel);hinge.position.y=.6;g.add(hinge);
+  const pick=new THREE.Group();const st=new THREE.Mesh(new THREE.CylinderGeometry(.3,.3,16,12),red);st.rotation.x=Math.PI/2;pick.add(st);[-.25,.25].forEach(d=>{const p=new THREE.Mesh(new THREE.CylinderGeometry(.08,.12,1.6,8),red);p.rotation.x=Math.PI/2;p.position.set(d,0,-8.6);pick.add(p)});pick.position.set(7,.45,6);pick.rotation.y=.2;g.add(pick);
+  add('tools',g,32,26,-0.5)})();
+
+ /* PK-21 wet wipes */
+ (()=>{const t=tex(6,8,(x)=>{x.fillStyle='#012850';x.fillRect(0,0,6,8);x.strokeStyle='rgba(255,244,230,.6)';x.setLineDash([.2,.2]);x.lineWidth=.06;x.strokeRect(.3,.3,5.4,7.4);x.setLineDash([]);mark(x,'reverse',3,2.9,4.6);txt(x,'KHĂN ƯỚT',3,5.5,.55,'#FFF4E6',{ls:.06});txt(x,'HƯƠNG CHANH',3,6.4,.5,'#FFBD59',{ls:.06})});
+  const side=new THREE.MeshStandardMaterial({color:lin('#012850'),roughness:.5});
+  const g=new THREE.Group();[0,1].forEach(i=>{const m=new THREE.Mesh(new THREE.BoxGeometry(6,.35,8),[side,side,mat(t,{roughness:.4}),side,side,side]);m.position.set(i*2.4,.3+i*.36,i*1.4);m.rotation.y=i*.3;g.add(m)});
+  add('wipes',g,48,50,0.2)})();
+
+ /* PK-22 shell bucket Ø150 × Ø120 × 120 */
+ (()=>{const rt=7.5,rb=6,H=12;const C=2*Math.PI*rt;
+  const sideT=tex(C,H,(x)=>{kraft(x,C,H);x.fillStyle='#012850';x.fillRect(0,3.4,C,5);mark(x,'iconMono',C/2-7,5.9,4.2);txt(x,'VỎ Ở ĐÂY',C/2+3,6,1.7,'#FFF4E6',{w:900,f:'Archivo,"Arial Black",sans-serif'});txt(x,'SHELLS HERE · 9CRABS',C/2,9.8,.6,'#012850',{ls:.12})});
+  const inner=tex(4,4,x=>kraft(x,4,4,'#A97E50'));
+  const g=new THREE.Group();const body=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,H,64,1,true,Math.PI),mat(sideT));body.position.y=H/2;g.add(body);
+  const inside=new THREE.Mesh(new THREE.CylinderGeometry(rt-.05,rb-.05,H,64,1,true),new THREE.MeshStandardMaterial({map:inner,side:THREE.BackSide,roughness:.9}));inside.position.y=H/2;g.add(inside);
+  const bottom=new THREE.Mesh(new THREE.CircleGeometry(rb,48),mat(inner));bottom.rotation.x=-Math.PI/2;bottom.position.y=.2;g.add(bottom);
+  const rim=new THREE.Mesh(new THREE.TorusGeometry(rt,.22,8,64),mat(inner));rim.rotation.x=Math.PI/2;rim.position.y=H;g.add(rim);
+  add('bucket',g,58,-12,0)})();
+
+ /* Ruler 30 cm */
+ (()=>{const L=32,W=3.2;const t=tex(L,W,(x)=>{x.fillStyle='#F7F3EA';x.fillRect(0,0,L,W);x.fillStyle='#012850';
+   for(let mm=0;mm<=300;mm++){const cx=1+mm/10;const h=mm%10===0?1.1:mm%5===0?.75:.45;x.fillRect(cx-.012,0,.024,h)}
+   for(let c=0;c<=30;c+=5)txt(x,String(c),1+c,1.75,.55,'#012850');txt(x,'cm',L-.6,2.6,.45,'#536878')});
+  const g=new THREE.Group();const m=new THREE.Mesh(new THREE.BoxGeometry(L,.25,W),[new THREE.MeshStandardMaterial({color:lin('#E8E1D3')}),new THREE.MeshStandardMaterial({color:lin('#E8E1D3')}),mat(t,{roughness:.6}),new THREE.MeshStandardMaterial({color:lin('#E8E1D3')}),new THREE.MeshStandardMaterial({color:lin('#E8E1D3')}),new THREE.MeshStandardMaterial({color:lin('#E8E1D3')})]);m.position.y=.13;g.add(m);
+  g.position.set(-2,0,30);g.traverse(o=>{if(o.isMesh)o.receiveShadow=true});scene.add(g)})();
+
+ /* Selection */
+ const helper=new THREE.BoxHelper(undefined,0xEC2201);helper.visible=false;scene.add(helper);
+ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ let anim=null;
+ function flyTo(pos,tgt){if(reduce){cam.position.copy(pos);controls.target.copy(tgt);return}
+  anim={t0:performance.now(),p0:cam.position.clone(),t0v:controls.target.clone(),p1:pos,t1:tgt}}
+ function select(id){Object.entries(btns).forEach(([k,b])=>b.setAttribute('aria-pressed',String(k===id)));
+  if(!id){helper.visible=false;showCard(null);flyTo(homePos(),HOME.tgt.clone());return}
+  const g=groups[id];helper.setFromObject(g);helper.visible=true;showCard(ITEMS.find(i=>i.id===id));
+  const box=new THREE.Box3().setFromObject(g);const c=box.getCenter(new THREE.Vector3());const s=box.getSize(new THREE.Vector3()).length();
+  const dist=Math.min(Math.max(s*2.7,42),165);const t=c.clone();t.y-=dist*.06;flyTo(new THREE.Vector3(c.x+dist*.3,c.y+dist*.5,c.z+dist*.85),t)}
+ window.select=select;
+ const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();let down=null;
+ renderer.domElement.addEventListener('pointerdown',e=>{down=[e.clientX,e.clientY]});
+ renderer.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>5)return;const r=renderer.domElement.getBoundingClientRect();
+  ptr.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);ray.setFromCamera(ptr,cam);
+  const hit=ray.intersectObjects(Object.values(groups),true)[0];if(!hit){select(null);return}let o=hit.object;while(o&&!o.userData.id)o=o.parent;if(o)select(o.userData.id)});
+
+ function resize(){const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);cam.aspect=w/h;
+  cam.fov=w<600?44:32;cam.updateProjectionMatrix();if(!touched&&!helper.visible&&!anim)cam.position.copy(homePos())}
+ function homePos(){const k=cam.aspect<0.8?2.1:cam.aspect<1.2?1.45:1;return HOME.tgt.clone().add(HOME.pos.clone().sub(HOME.tgt).multiplyScalar(k))}
+ let touched=false;controls.addEventListener('start',()=>{touched=true});
+ new ResizeObserver(resize).observe(stage);resize();
+ let visible=true;new IntersectionObserver(es=>{visible=es[0].isIntersecting},{rootMargin:'100px'}).observe(stage);
+ function loop(now){requestAnimationFrame(loop);if(!visible)return;
+  if(anim){const k=Math.min(1,(now-anim.t0)/700),e=1-Math.pow(1-k,3);cam.position.lerpVectors(anim.p0,anim.p1,e);controls.target.lerpVectors(anim.t0v,anim.t1,e);if(k>=1)anim=null}
+  controls.update();renderer.render(scene,cam)}
+ requestAnimationFrame(loop);
+ function snap(){try{controls.update();renderer.render(scene,cam);const url=renderer.domElement.toDataURL('image/jpeg',.92);let im=stage.querySelector('img.shot');if(!im){im=document.createElement('img');im.className='shot';im.alt='Mô hình 3D toàn bộ bao bì 9Crabs';stage.prepend(im)}im.src=url}catch(e){}}
+ setTimeout(snap,1200);addEventListener('beforeprint',snap);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi" data-static>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="title.cart">Giỏ hàng & Thanh toán | 9Crabs</title>
+<link rel="icon" type="image/png" href="img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.gio-bang{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--bo);overflow:hidden;border:1px solid var(--xam-nhat)}
+.gio-bang td,.gio-bang th{padding:.8rem 1rem;border-bottom:1px solid #f3e9dc;text-align:left}
+.gio-bang th{background:#fdf3e4;font-size:.8rem;text-transform:uppercase;color:var(--xam)}
+.gio-bang .so{text-align:right;white-space:nowrap}
+.so-luong{display:inline-flex;align-items:center;border:1.5px solid #eadbc8;border-radius:999px;overflow:hidden}
+.so-luong button{border:0;background:#fff;width:30px;height:30px;cursor:pointer;font-weight:700;color:var(--do)}
+.so-luong span{min-width:28px;text-align:center;font-weight:700}
+.xoa{background:none;border:0;cursor:pointer;color:#c62828;font-size:1.1rem}
+.tong-ket{background:#fff;border-radius:var(--bo);padding:1.4rem;border:1px solid var(--xam-nhat);position:sticky;top:100px}
+.tong-ket .dong{display:flex;justify-content:space-between;padding:.35rem 0;color:var(--xam)}
+.tong-ket .dong.tong{border-top:2px dashed #eadbc8;margin-top:.5rem;padding-top:.8rem;color:var(--do);font-size:1.3rem;font-weight:800}
+.tong-ket .giam{color:#2e7d32}
+.pt{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.3rem}
+.form .pt label{display:flex;align-items:center;gap:.6rem;border:1.5px solid var(--xam-nhat);border-radius:10px;padding:.65rem .8rem;cursor:pointer;font-weight:600;margin:0;font-size:.86rem;text-transform:none;letter-spacing:0;color:var(--chu)}
+.form .pt input{width:auto;margin:0}
+.pt label:has(input:checked){border-color:var(--do);background:#fff5f3}
+.thanh-cong{text-align:center;padding:3rem 1rem}
+.thanh-cong .ma{font-family:var(--font-tieu-de);font-size:2.2rem;color:var(--do);margin:.6rem 0}
+</style>
+</head>
+<body>
+<div class="thanh-tren"><div class="khung">
+  <span data-i18n="thanh.mien-phi">🦀 Miễn phí giao hàng cho đơn từ 1.500.000đ</span>
+  <div class="phai"><a href="menu.html" data-i18n="thanh.dat-mon">Đặt món online</a><a href="contact.html" data-i18n="thanh.dat-ban">Đặt bàn</a><a href="https://zalo.me/0909999999" data-i18n="thanh.zalo">Zalo 24/7</a></div>
+</div></div>
+<header class="dau-trang" data-trang="cart"></header>
+
+<main>
+<div class="tieu-de-trang khung"><div class="ornament"><span>9Crabs</span></div><h1 data-i18n="tt.h1">Giỏ hàng & Thanh toán</h1><p data-i18n="tt.p">Nấu tươi khi đặt · Giao trong 1 giờ · Đổi 1-1 nếu không hài lòng</p></div>
+
+<section id="khu-gio">
+  <div class="khung lien-he-luoi" style="grid-template-columns:1.5fr 1fr">
+    <div>
+      <h2 style="text-align:left;font-size:1.4rem;margin-bottom:1rem" data-i18n="tt.mon-da-chon">Món đã chọn</h2>
+      <table class="gio-bang"><thead><tr><th data-i18n="tt.mon">Món</th><th data-i18n="tt.sl">Số lượng</th><th class="so" data-i18n="tt.don-gia">Đơn giá</th><th class="so" data-i18n="tt.thanh-tien">Thành tiền</th><th></th></tr></thead><tbody id="gio-than"></tbody></table>
+      <p style="margin-top:1rem"><a href="menu.html" class="nut vien toi" data-i18n="tt.chon-them">← Chọn thêm món</a></p>
+
+      <form class="form" data-thanh-toan id="form-dat" style="margin-top:2rem">
+        <h2 style="text-align:left;font-size:1.4rem" data-i18n="tt.giao-h2">Thông tin giao hàng</h2>
+        <label data-i18n="tt.ho-ten">Họ và tên *</label><input name="ho_ten" required placeholder="Nguyễn Văn A">
+        <label data-i18n="tt.sdt">Số điện thoại *</label><input name="sdt" required placeholder="09xx xxx xxx" inputmode="tel">
+        <label data-i18n="tt.email">Email (nhận hoá đơn)</label><input name="email" type="email" placeholder="ban@email.com">
+        <label data-i18n="tt.dia-chi">Địa chỉ giao *</label><input name="dia_chi" required placeholder="Số nhà, đường, phường, quận">
+        <label data-i18n="tt.khung-gio">Khung giờ giao</label>
+        <select name="giao_luc"><option value="" data-i18n="tt.som-nhat">Sớm nhất (trong 1 giờ)</option><option>11:00 – 12:00</option><option>12:00 – 13:00</option><option>17:00 – 18:00</option><option>18:00 – 19:00</option><option>19:00 – 20:00</option><option>20:00 – 21:00</option></select>
+        <label data-i18n="tt.pt">Phương thức thanh toán</label>
+        <div class="pt">
+          <label><input type="radio" name="phuong_thuc" value="cod" checked> <span data-i18n="tt.cod">💵 Tiền mặt khi nhận</span></label>
+          <label><input type="radio" name="phuong_thuc" value="momo"> 🟣 MoMo</label>
+          <label><input type="radio" name="phuong_thuc" value="zalopay"> 🔵 ZaloPay</label>
+          <label><input type="radio" name="phuong_thuc" value="chuyen_khoan"> <span data-i18n="tt.ck">🏦 Chuyển khoản</span></label>
+        </div>
+        <label data-i18n="tt.ghi-chu">Ghi chú</label><textarea name="ghi_chu" rows="3" placeholder="Ví dụ: ít cay, gọi trước khi giao, không lấy bánh bao…" data-i18n-ph="tt.ghi-chu-ph"></textarea>
+        <div class="thong-bao" id="loi-dat" style="background:#ffebee;color:#c62828"></div>
+      </form>
+    </div>
+
+    <aside class="tong-ket">
+      <h3 style="margin-bottom:.8rem" data-i18n="tt.tom-tat">Tóm tắt đơn hàng</h3>
+      <div id="tom-tat">
+        <div class="dong"><span data-i18n="tt.tam-tinh">Tạm tính</span><b id="tt-tam">0đ</b></div>
+        <div id="tt-giam-dong"></div>
+        <div class="dong"><span data-i18n="tt.phi">Phí giao hàng</span><b id="tt-phi">0đ</b></div>
+        <div class="dong tong"><span data-i18n="tt.tong">Tổng cộng</span><span id="tt-tong">0đ</span></div>
+      </div>
+      <p style="font-size:.82rem;color:var(--xam);margin:.8rem 0" id="goi-y-giam"></p>
+      <button class="nut" style="width:100%;text-align:center" id="nut-dat" form="form-dat" data-i18n="tt.dat">Đặt hàng ngay</button>
+      <p style="font-size:.78rem;color:var(--xam);margin-top:.8rem" data-i18n="tt.dieu-khoan">Bằng việc đặt hàng, bạn đồng ý với điều khoản của 9Crabs. Chúng tôi sẽ gọi xác nhận trong 5 phút.</p>
+    </aside>
+  </div>
+</section>
+
+<section id="khu-thanh-cong" style="display:none">
+  <div class="khung thanh-cong">
+    <div class="bieu-tuong" style="width:90px;height:90px;font-size:2.6rem">🎉</div>
+    <h2 data-i18n="tt.thanh-cong">Đặt hàng thành công!</h2>
+    <div class="ma" id="ma-don"></div>
+    <p class="mo-ta"><span data-i18n="tt.cam-on">Cảm ơn bạn đã tin tưởng 9Crabs. Nhân viên sẽ gọi xác nhận trong ít phút. Tổng thanh toán:</span> <b id="tong-don"></b></p>
+    <a href="menu.html" class="nut" data-i18n="tt.tiep">Tiếp tục đặt món</a> &nbsp; <a href="index.html" class="nut vien toi" data-i18n="tt.ve">Về trang chủ</a>
+  </div>
+</section>
+</main>
+
+<footer class="chan-trang" data-tu-dong></footer>
+<a class="zalo-noi" href="https://zalo.me/0909999999" data-i18n="zalo.chat">💬 Chat Zalo ngay</a>
+<script src="static-api.js"></script>
+<script src="i18n.js"></script>
+<script src="app.js"></script>
+<script>
+(() => {
+  const C9 = window.NineCrabs; const { vnd, thoat } = C9; const t = C9.t; const tr = C9.truong;
+  const than = document.getElementById('gio-than');
+  let baoGia = null, dangGui = false;
+
+  async function tinh() {
+    const g = C9.docGio(); const sdt = document.querySelector('[name=sdt]').value;
+    baoGia = await fetch('/api/quote', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: g, sdt }) }).then((r) => r.json());
+    document.getElementById('tt-tam').textContent = vnd(baoGia.tam_tinh);
+    document.getElementById('tt-phi').textContent = baoGia.phi_giao ? vnd(baoGia.phi_giao) : t('tt.mien-phi', 'Miễn phí');
+    document.getElementById('tt-tong').textContent = vnd(baoGia.tong);
+    document.getElementById('tt-giam-dong').innerHTML = baoGia.giam_gia ? `<div class="dong giam"><span>${baoGia.giam_gia_mo_ta.join(', ')}</span><b>-${vnd(baoGia.giam_gia)}</b></div>` : '';
+    const ch = C9.cauHinh; const conThieu = ch.nguong_mien_phi - (baoGia.tam_tinh - baoGia.giam_gia);
+    document.getElementById('goi-y-giam').textContent = baoGia.tam_tinh && conThieu > 0 ? t('tt.goi-y-ship', 'Mua thêm {so} để được miễn phí giao hàng.', { so: vnd(conThieu) }) : baoGia.so_cua === 1 && ch.giam_2_cua_phan_tram > 0 ? t('tt.goi-y-cua', 'Thêm 1 cua nữa để được giảm {pt}% toàn đơn!', { pt: ch.giam_2_cua_phan_tram }) : '';
+  }
+  function ve() {
+    const g = C9.docGio();
+    than.innerHTML = g.length ? g.map((it) => { const s = C9.sanPham.find((x) => x.id === it.id); if (!s) return ''; const gia = s.gia_khuyen_mai ?? s.gia;
+      return `<tr><td><b>${s.hinh ? `<img src="${thoat(s.hinh)}" alt="" style="width:48px;height:48px;object-fit:cover;border-radius:8px;display:inline-block;vertical-align:middle;margin-right:.5rem">` : s.icon} ${thoat(tr(s, 'ten'))}</b><br><small style="color:var(--xam)">${thoat(tr(s, 'don_vi'))}</small></td>
+      <td><span class="so-luong"><button data-sl="${it.id}|-1">−</button><span>${it.so_luong}</span><button data-sl="${it.id}|1">+</button></span></td>
+      <td class="so">${vnd(gia)}</td><td class="so"><b>${vnd(gia * it.so_luong)}</b></td><td><button class="xoa" data-xoa="${it.id}" title="Xoá">✕</button></td></tr>`; }).join('')
+      : `<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--xam)">${t('tt.trong', 'Giỏ hàng trống.')} <a href="menu.html" style="color:var(--do);font-weight:700">${t('tt.xem-td', 'Xem thực đơn →')}</a></td></tr>`;
+    document.getElementById('nut-dat').disabled = !g.length;
+    tinh();
+  }
+  than.addEventListener('click', (e) => {
+    const sl = e.target.closest('[data-sl]'); const xoa = e.target.closest('[data-xoa]');
+    let g = C9.docGio();
+    if (sl) { const [id, d] = sl.dataset.sl.split('|').map(Number); const it = g.find((x) => x.id === id); if (it) { it.so_luong = Math.max(1, Math.min(99, it.so_luong + d)); } }
+    if (xoa) g = g.filter((x) => x.id !== +xoa.dataset.xoa);
+    C9.luuGio(g); ve();
+  });
+  document.querySelector('[name=sdt]').addEventListener('change', tinh);
+
+  document.getElementById('form-dat').addEventListener('submit', async (e) => {
+    e.preventDefault(); if (dangGui) return;
+    const loi = document.getElementById('loi-dat'); loi.style.display = 'none';
+    const b = Object.fromEntries(new FormData(e.target)); b.items = C9.docGio();
+    dangGui = true; const nut = document.getElementById('nut-dat'); nut.textContent = t('tt.dang-gui', 'Đang gửi…');
+    try {
+      const r = await fetch('/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) });
+      const d = await r.json(); if (!r.ok) throw new Error(d.loi || t('tt.loi-mac-dinh', 'Không đặt được đơn'));
+      C9.luuGio([]);
+      document.getElementById('khu-gio').style.display = 'none'; document.getElementById('khu-thanh-cong').style.display = '';
+      document.getElementById('ma-don').textContent = d.ma; document.getElementById('tong-don').textContent = vnd(d.tong);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) { loi.textContent = err.message; loi.style.display = 'block'; }
+    dangGui = false; nut.textContent = t('tt.dat', 'Đặt hàng ngay');
+  });
+  C9.san.then(ve); document.addEventListener('9crabs:lang', ve);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi" data-static>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title id="tieu-de-tab">Bài viết | 9Crabs</title>
+<link rel="icon" type="image/png" href="img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Noto+Serif+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="thanh-tren"><div class="khung">
+  <span data-i18n="thanh.mien-phi">🦀 Miễn phí giao hàng cho đơn từ 1.500.000đ</span>
+  <div class="phai"><a href="menu.html" data-i18n="thanh.dat-mon">Đặt món online</a><a href="contact.html" data-i18n="thanh.dat-ban">Đặt bàn</a><a href="https://zalo.me/0909999999" data-i18n="thanh.zalo">Zalo 24/7</a></div>
+</div></div>
+<header class="dau-trang" data-trang=""></header>
+
+<main>
+  <article class="bai-chi-tiet khung" id="bai"><p class="mo-ta" style="padding:4rem 0" data-i18n="bv.dang-tai">Đang tải bài viết…</p></article>
+  <section class="nen-kem" id="lien-quan" style="display:none">
+    <div class="khung">
+      <div class="ornament"><span data-i18n="bv.lien-quan">Bài liên quan</span></div>
+      <h2 data-i18n="bv.lien-quan-h2">Đọc tiếp</h2>
+      <div class="luoi-bai" id="luoi-lien-quan" style="margin-top:2.5rem"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="chan-trang" data-tu-dong></footer>
+<a class="zalo-noi" href="https://zalo.me/0909999999" data-i18n="zalo.chat">💬 Chat Zalo</a>
+<script src="static-api.js"></script>
+<script src="i18n.js"></script>
+<script src="app.js"></script>
+<script>
+(() => {
+  const C9 = window.NineCrabs; const { t, thoat, vnd } = C9; const tr = C9.truongBai;
+  const slug = new URLSearchParams(location.search).get('slug') || location.hash.slice(1);
+  let bai = null;
+  const DO_KHO = { de: ['Dễ', 'Easy', '쉬움'], vua: ['Vừa', 'Medium', '보통'], kho: ['Khó', 'Hard', '어려움'] };
+  const dk = (k) => { const i = { vi: 0, en: 1, ko: 2 }[C9.lang()] || 0; return (DO_KHO[k] || [k, k, k])[i]; };
+  const dong = (s) => String(s || '').split('\n').map((x) => x.trim()).filter(Boolean);
+  const ngay = (s) => { const d = new Date(s); return isNaN(d) ? s : d.toLocaleDateString({ vi: 'vi-VN', en: 'en-GB', ko: 'ko-KR' }[C9.lang()] || 'vi-VN', { day: 'numeric', month: 'long', year: 'numeric' }); };
+
+  function ve() {
+    if (!bai) return;
+    const el = document.getElementById('bai');
+    const tieuDe = tr(bai, 'tieu_de'); document.getElementById('tieu-de-tab').textContent = `${tieuDe} | 9Crabs`;
+    const laCooking = bai.loai === 'cooking';
+    const nguyenLieu = dong(tr(bai, 'nguyen_lieu')); const cacBuoc = dong(tr(bai, 'cac_buoc')); const meo = tr(bai, 'meo');
+    const tenMon = C9.truong({ ten: bai.ten_mon, ten_en: bai.ten_mon_en, ten_ko: bai.ten_mon_ko }, 'ten');
+    el.innerHTML = `
+      <div class="bai-dau">
+        <div class="ornament"><span>${laCooking ? t('cb.orn', 'Góc bếp 9Crabs') : t('tt2.orn', 'Tin tức')}</span></div>
+        <h1>${thoat(tieuDe)}</h1>
+        <p class="bai-tom-tat">${thoat(tr(bai, 'tom_tat'))}</p>
+        <div class="bai-meta">
+          ${laCooking ? `<span>⏱ ${bai.thoi_gian} ${t('bv.phut', 'phút')}</span><span>◎ ${dk(bai.do_kho)}</span><span>👥 ${thoat(bai.khau_phan)}</span>` : `<span>📅 ${ngay(bai.ngay)}</span>`}
+        </div>
+      </div>
+      ${bai.hinh ? `<div class="bai-anh"><img src="${thoat(bai.hinh)}" alt="${thoat(tieuDe)}"></div>` : ''}
+      <div class="bai-than ${laCooking ? 'co-nguyen-lieu' : ''}">
+        ${laCooking && nguyenLieu.length ? `<aside class="bai-nguyen-lieu"><h3>${t('bv.nguyen-lieu', 'Nguyên liệu')}</h3><ul>${nguyenLieu.map((d) => { const [ten, luong] = d.split('|').map((x) => x.trim()); return `<li><span>${thoat(ten)}</span><b>${thoat(luong || '')}</b></li>`; }).join('')}</ul>
+          ${bai.san_pham_id ? `<div class="bai-mua"><div class="nho">${t('bv.luoi-nau', 'Lười nấu? Đặt món này')}</div><b>${thoat(tenMon)}</b><div class="gia">${vnd(bai.gia_km_mon ?? bai.gia_mon)}</div><button class="nut do nho-nut" data-id="${bai.san_pham_id}">${t('them-gio', 'Thêm vào giỏ')}</button></div>` : ''}</aside>` : ''}
+        <div class="bai-noi-dung">
+          ${tr(bai, 'noi_dung').split(/\n{2,}|\n/).filter(Boolean).map((p) => `<p>${thoat(p)}</p>`).join('')}
+          ${laCooking && cacBuoc.length ? `<h3>${t('bv.cac-buoc', 'Các bước thực hiện')}</h3><ol class="bai-buoc">${cacBuoc.map((b) => `<li>${thoat(b)}</li>`).join('')}</ol>` : ''}
+          ${laCooking && meo ? `<div class="bai-meo"><b>💡 ${t('bv.meo', 'Mẹo của bếp trưởng')}</b><p>${thoat(meo)}</p></div>` : ''}
+          <p style="margin-top:2.5rem"><a href="${laCooking ? 'cooking.html' : 'news.html'}" class="nut vien toi">← ${laCooking ? t('bv.ve-goc-bep', 'Về Góc bếp') : t('bv.ve-tin-tuc', 'Về Tin tức')}</a></p>
+        </div>
+      </div>`;
+    C9.apDungNgonNgu?.(el);
+  }
+  async function tai() {
+    if (!slug) { document.getElementById('bai').innerHTML = `<p class="mo-ta" style="padding:4rem 0">${t('bv.khong-thay', 'Không tìm thấy bài viết.')}</p>`; return; }
+    const r = await fetch('/api/articles/slug/' + encodeURIComponent(slug)); if (!r.ok) { document.getElementById('bai').innerHTML = `<p class="mo-ta" style="padding:4rem 0">${t('bv.khong-thay', 'Không tìm thấy bài viết.')}</p>`; return; }
+    bai = await r.json(); ve();
+    const lq = await fetch(`/api/articles?type=${bai.loai}&limit=4`).then((x) => x.json()).catch(() => []);
+    const khac = lq.filter((b) => b.slug !== bai.slug).slice(0, 3);
+    if (khac.length) { document.getElementById('lien-quan').style.display = ''; document.getElementById('luoi-lien-quan').innerHTML = khac.map(C9.theBai).join(''); }
+  }
+  C9.san.then(tai);
+  document.addEventListener('9crabs:lang', () => { ve(); const lq = document.getElementById('luoi-lien-quan'); if (lq.children.length) fetch(`/api/articles?type=${bai.loai}&limit=4`).then((x) => x.json()).then((ds) => (lq.innerHTML = ds.filter((b) => b.slug !== bai.slug).slice(0, 3).map(C9.theBai).join(''))); });
+})();
+</script>
+</body>
+</html>
